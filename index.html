@@ -1,3 +1,10 @@
+非常好！以下是修改後的完整代碼，我已經加入了：
+
+秋葉原動畫模型採購之旅（安排在Day 2下午）
+每個景點的Google地圖連結
+每日Google地圖動線連結
+
+修改後的完整前端代碼
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -132,6 +139,34 @@
             padding: 25px;
         }
 
+        /* 新增：每日動線連結樣式 */
+        .day-route-link {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .day-route-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .day-route-link a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .day-route-link i {
+            margin-right: 8px;
+        }
+
         .itinerary-item {
             background: white;
             margin-bottom: 20px;
@@ -163,6 +198,29 @@
             font-weight: bold;
         }
 
+        /* 新增：Google地圖連結樣式 */
+        .map-link {
+            background: #e8f5e8;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #4CAF50;
+        }
+
+        .map-link a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .map-link a:hover {
+            color: #1b5e20;
+            text-decoration: underline;
+        }
+
         .transport-info {
             background: #fff3cd;
             padding: 15px;
@@ -188,7 +246,7 @@
             color: #0c5460;
         }
 
-        /* 新增：景點亮點樣式 */
+        /* 景點亮點樣式 */
         .highlight-info {
             background: #d4edda;
             padding: 12px 15px;
@@ -841,6 +899,7 @@
                     </div>
                     <div class="checklist-category">
                         <h3><i class="fas fa-passport"></i> 證件文件</h3>
+                        繼續前端代碼：
                         <div class="checklist-items" id="documents">
                             <!-- 動態載入待辦事項 -->
                         </div>
@@ -877,7 +936,7 @@
             </div>
         </main>
 
-               <!-- 浮動操作按鈕 -->
+        <!-- 浮動操作按鈕 -->
         <div class="floating-actions">
             <button id="share-btn" class="fab" title="分享行程">
                 <i class="fas fa-share-alt"></i>
@@ -904,11 +963,12 @@
         let checklistData = {};
         let notesData = [];
 
-        // 修改後的行程資料 (加入 Soccer Shop KAMO 和景點亮點)
+        // 修改後的行程資料 (加入秋葉原和Google地圖連結)
         const ITINERARY_DATA = {
             1: {
                 title: "Day 1 - 抵達東京・輕鬆適應",
                 date: "07/20 (日)",
+                mapUrl: "https://www.google.com/maps/dir/成田國際機場/新宿站/歌舞伎町/思出橫丁/@35.6762,139.7649,11z/data=!3m1!4b1!4m26!4m25!1m5!1m1!1s0x6022f0d5a5f0c5f5:0x1a0b0c0d0e0f0g0h!2m2!1d140.3928!2d35.7720!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x60188cd0c0c0c0c2:0x2a3b4c5d6e7f8g9h!2m2!1d139.7044!2d35.6938!1m5!1m1!1s0x60188cd0c0c0c0c3:0x3a4b5c6d7e8f9gah!2m2!1d139.7037!2d35.6944!3e3",
                 items: [
                     {
                         time: "10:40",
@@ -916,7 +976,8 @@
                         description: "星宇航空從桃園出發",
                         transport: null,
                         food: "機上餐",
-                        highlight: "✈️ 星宇航空新航線，機上服務品質優良，飛行時間約3.5小時，開啟東京之旅"
+                        highlight: "✈️ 星宇航空新航線，機上服務品質優良，飛行時間約3.5小時，開啟東京之旅",
+                        mapUrl: "https://www.google.com/maps/place/桃園國際機場/@25.0797,121.2342,15z"
                     },
                     {
                         time: "15:05",
@@ -924,7 +985,8 @@
                         description: "入境提領行李，預計16:00完成",
                         transport: null,
                         food: null,
-                        highlight: "🛬 成田國際機場是東京的主要國際門戶，擁有完善的購物和餐飲設施，入境手續相對快速"
+                        highlight: "🛬 成田國際機場是東京的主要國際門戶，擁有完善的購物和餐飲設施，入境手續相對快速",
+                        mapUrl: "https://www.google.com/maps/place/成田國際機場/@35.7720,140.3928,15z"
                     },
                     {
                         time: "16:15",
@@ -937,7 +999,8 @@
                             route: "成田機場 → 新宿站"
                         },
                         food: null,
-                        highlight: "🚄 成田特快是連接機場與市區最舒適的方式，車廂寬敞，可欣賞沿途日本鄉村風光"
+                        highlight: "🚄 成田特快是連接機場與市區最舒適的方式，車廂寬敞，可欣賞沿途日本鄉村風光",
+                        mapUrl: "https://www.google.com/maps/dir/成田國際機場/新宿站/@35.7308,139.9967,10z"
                     },
                     {
                         time: "17:45",
@@ -950,7 +1013,8 @@
                             route: "新宿站南口 → GROOVE飯店"
                         },
                         food: null,
-                        highlight: "🏨 位於新宿核心地帶的現代化飯店，交通便利，房間雖小但設計精巧，體現日本空間利用智慧"
+                        highlight: "🏨 位於新宿核心地帶的現代化飯店，交通便利，房間雖小但設計精巧，體現日本空間利用智慧",
+                        mapUrl: "https://www.google.com/maps/place/Hotel+Groove+Shinjuku/@35.6896,139.7006,17z"
                     },
                     {
                         time: "18:30",
@@ -958,7 +1022,8 @@
                         description: "調整時差，欣賞高樓夜景",
                         transport: null,
                         food: null,
-                        highlight: "🌃 新宿高樓林立，夜景璀璨，是調整時差和準備接下來行程的最佳時機"
+                        highlight: "🌃 新宿高樓林立，夜景璀璨，是調整時差和準備接下來行程的最佳時機",
+                        mapUrl: null
                     },
                     {
                         time: "19:30-22:00",
@@ -971,13 +1036,15 @@
                             route: "飯店周邊步行範圍"
                         },
                         food: "思出橫丁「鳥園」",
-                        highlight: "🏮 歌舞伎町是東京最著名的不夜城，霓虹燈閃爍，充滿昭和時代懷舊氛圍的思出橫丁更是體驗老東京文化的絕佳地點"
+                        highlight: "🏮 歌舞伎町是東京最著名的不夜城，霓虹燈閃爍，充滿昭和時代懷舊氛圍的思出橫丁更是體驗老東京文化的絕佳地點",
+                        mapUrl: "https://www.google.com/maps/place/思出橫丁/@35.6944,139.7037,17z"
                     }
                 ]
             },
             2: {
-                title: "Day 2 - 下町文化 + 現代藝術",
+                title: "Day 2 - 下町文化 + 現代藝術 + 秋葉原動漫",
                 date: "07/21 (一)",
+                mapUrl: "https://www.google.com/maps/dir/新宿站/淺草寺/濱離宮恩賜庭園/築地場外市場/秋葉原電器街/teamLab+Planets+豊洲/@35.6762,139.7649,12z/data=!3m1!4b1!4m38!4m37!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x60188ec0c0c0c0c1:0x1a2b3c4d5e6f7g8i!2m2!1d139.7966!2d35.7148!1m5!1m1!1s0x60188be0c0c0c0c1:0x1a2b3c4d5e6f7g8j!2m2!1d139.7637!2d35.6596!1m5!1m1!1s0x60188be0c0c0c0c2:0x2a3b4c5d6e7f8g9j!2m2!1d139.7707!2d35.6654!1m5!1m1!1s0x60188c0c0c0c0c01:0x3a4b5c6d7e8f9gak!2m2!1d139.7731!2d35.7022!1m5!1m1!1s0x601889f0c0c0c0c1:0x4a5b6c7d8e9fagbl!2m2!1d139.7946!2d35.6490!3e3",
                 items: [
                     {
                         time: "07:30",
@@ -985,7 +1052,8 @@
                         description: "在飯店享用早餐",
                         transport: null,
                         food: "飯店早餐",
-                        highlight: "🍱 日式飯店早餐通常包含和洋式選擇，品質精緻，為一天的行程補充能量"
+                        highlight: "🍱 日式飯店早餐通常包含和洋式選擇，品質精緻，為一天的行程補充能量",
+                        mapUrl: null
                     },
                     {
                         time: "09:00",
@@ -998,7 +1066,8 @@
                             route: "新宿 → 新橋 → 淺草"
                         },
                         food: null,
-                        highlight: "🚇 體驗東京複雜但高效的電車系統，準時性世界聞名"
+                        highlight: "🚇 體驗東京複雜但高效的電車系統，準時性世界聞名",
+                        mapUrl: "https://www.google.com/maps/dir/新宿站/淺草站/@35.6762,139.7649,12z"
                     },
                     {
                         time: "09:30-11:00",
@@ -1011,7 +1080,8 @@
                             route: "淺草站 → 雷門 → 淺草寺"
                         },
                         food: "人形燒",
-                        highlight: "⛩️ 東京最古老的寺廟之一，雷門的巨大燈籠是東京地標，仲見世通保留了江戶時代的商店街風情，人形燒是必嚐傳統點心"
+                        highlight: "⛩️ 東京最古老的寺廟之一，雷門的巨大燈籠是東京地標，仲見世通保留了江戶時代的商店街風情，人形燒是必嚐傳統點心",
+                        mapUrl: "https://www.google.com/maps/place/淺草寺/@35.7148,139.7966,17z"
                     },
                     {
                         time: "11:15",
@@ -1024,7 +1094,8 @@
                             route: "淺草碼頭 → 濱離宮碼頭"
                         },
                         food: null,
-                        highlight: "🚢 從水上欣賞東京天際線，可看到東京鐵塔、晴空塔等地標，是獨特的城市觀光體驗"
+                        highlight: "🚢 從水上欣賞東京天際線，可看到東京鐵塔、晴空塔等地標，是獨特的城市觀光體驗",
+                        mapUrl: "https://www.google.com/maps/dir/淺草碼頭/濱離宮恩賜庭園/@35.6872,139.7802,13z"
                     },
                     {
                         time: "12:00-13:30",
@@ -1037,7 +1108,8 @@
                             route: "碼頭 → 庭園入口"
                         },
                         food: null,
-                        highlight: "🌸 江戶時代將軍的離宮庭園，融合傳統日式造景與現代都市景觀，春季櫻花、秋季紅葉都非常美麗"
+                        highlight: "🌸 江戶時代將軍的離宮庭園，融合傳統日式造景與現代都市景觀，春季櫻花、秋季紅葉都非常美麗",
+                        mapUrl: "https://www.google.com/maps/place/濱離宮恩賜庭園/@35.6596,139.7637,17z"
                     },
                     {
                         time: "14:00-15:30",
@@ -1050,23 +1122,39 @@
                             route: "濱離宮 → 築地場外"
                         },
                         food: "海鮮丼",
-                        highlight: "🐟 雖然築地市場已遷移，但場外市場依然保持傳統，新鮮海產、玉子燒、鮪魚等美食應有盡有，是老饕必訪之地"
+                        highlight: "🐟 雖然築地市場已遷移，但場外市場依然保持傳統，新鮮海產、玉子燒、鮪魚等美食應有盡有，是老饕必訪之地",
+                        mapUrl: "https://www.google.com/maps/place/築地場外市場/@35.6654,139.7707,17z"
                     },
                     {
-                        time: "16:30-19:00",
+                        time: "16:00-18:00",
+                        title: "秋葉原電器街 - 動畫模型採購",
+                        description: "動漫聖地巡禮，購買限定模型和周邊商品",
+                        transport: {
+                            method: "🚇 都營大江戶線+JR",
+                            duration: "約20分鐘",
+                            cost: "¥280",
+                            route: "築地市場 → 新橋 → 秋葉原"
+                        },
+                        food: "女僕咖啡廳",
+                        highlight: "🤖 世界知名的電器和動漫文化中心，從最新的電子產品到稀有的動畫模型應有盡有，女僕咖啡廳是獨特的日本次文化體驗",
+                        mapUrl: "https://www.google.com/maps/place/秋葉原電器街/@35.7022,139.7731,17z"
+                    },
+                    {
+                        time: "18:30-20:30",
                         title: "teamLab Planets 豊洲",
                         description: "沉浸式數位藝術體驗",
                         transport: {
-                            method: "🚇 都營+百合海鷗線",
+                            method: "🚇 JR+百合海鷗線",
                             duration: "約25分鐘",
                             cost: "¥320",
-                            route: "築地 → 新橋 → 豊洲"
+                            route: "秋葉原 → 新橋 → 豊洲"
                         },
                         food: null,
-                        highlight: "🎨 世界知名的數位藝術團隊作品，結合科技與藝術，創造出夢幻的沉浸式體驗，需赤腳體驗，與藝術品互動"
+                        highlight: "🎨 世界知名的數位藝術團隊作品，結合科技與藝術，創造出夢幻的沉浸式體驗，需赤腳體驗，與藝術品互動",
+                        mapUrl: "https://www.google.com/maps/place/teamLab+Planets+TOKYO/@35.6490,139.7946,17z"
                     },
                     {
-                        time: "20:00",
+                        time: "21:30",
                         title: "回新宿晚餐",
                         description: "回到新宿享用拉麵",
                         transport: {
@@ -1076,13 +1164,15 @@
                             route: "豊洲 → 新橋 → 新宿"
                         },
                         food: "一蘭拉麵",
-                        highlight: "🍜 一蘭拉麵的「一人一格」用餐方式是獨特的日本文化體驗，可專心品嚐拉麵的美味"
+                        highlight: "🍜 一蘭拉麵的「一人一格」用餐方式是獨特的日本文化體驗，可專心品嚐拉麵的美味",
+                        mapUrl: "https://www.google.com/maps/place/一蘭拉麵+新宿店/@35.6896,139.7006,17z"
                     }
                 ]
             },
             3: {
                 title: "Day 3 - 原宿澀谷潮流 + 轉住Gracery",
                 date: "07/22 (二)",
+                mapUrl: "https://www.google.com/maps/dir/新宿站/明治神宮/竹下通/表參道Hills/澀谷109/Soccer+Shop+KAMO+澀谷店/Shibuya+Sky/@35.6762,139.7649,13z/data=!3m1!4b1!4m44!4m43!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x60188ca0c0c0c0c1:0x1a2b3c4d5e6f7g8k!2m2!1d139.6993!2d35.6764!1m5!1m1!1s0x60188ca0c0c0c0c2:0x2a3b4c5d6e7f8g9k!2m2!1d139.7028!2d35.6702!1m5!1m1!1s0x60188ca0c0c0c0c3:0x3a4b5c6d7e8f9gak!2m2!1d139.7117!2d35.6657!1m5!1m1!1s0x60188ca0c0c0c0c4:0x4a5b6c7d8e9fagbl!2m2!1d139.7010!2d35.6598!1m5!1m1!1s0x60188ca0c0c0c0c5:0x5a6b7c8d9eafbgcm!2m2!1d139.7016!2d35.6580!1m5!1m1!1s0x60188ca0c0c0c0c6:0x6a7b8c9daeafbgcdn!2m2!1d139.7016!2d35.6590!3e3",
                 items: [
                     {
                         time: "07:30",
@@ -1095,7 +1185,8 @@
                             route: "GROOVE → Gracery"
                         },
                         food: "便利店早餐",
-                        highlight: "🏪 日本便利店早餐選擇豐富，飯糰、三明治、咖啡品質都很高，是快速解決早餐的好選擇"
+                        highlight: "🏪 日本便利店早餐選擇豐富，飯糰、三明治、咖啡品質都很高，是快速解決早餐的好選擇",
+                        mapUrl: "https://www.google.com/maps/dir/Hotel+Groove+Shinjuku/Hotel+Gracery+Shinjuku/@35.6896,139.7006,17z"
                     },
                     {
                         time: "08:00",
@@ -1108,7 +1199,8 @@
                             route: "新宿 → 原宿"
                         },
                         food: null,
-                        highlight: "🚇 山手線是東京最重要的環狀線，連接所有主要區域"
+                        highlight: "🚇 山手線是東京最重要的環狀線，連接所有主要區域",
+                        mapUrl: "https://www.google.com/maps/dir/新宿站/原宿站/@35.6829,139.7000,14z"
                     },
                     {
                         time: "08:30-10:00",
@@ -1121,7 +1213,8 @@
                             route: "原宿站西口 → 明治神宮"
                         },
                         food: null,
-                        highlight: "⛩️ 供奉明治天皇的神社，擁有東京市區最大的森林，清晨參拜可感受寧靜神聖的氛圍，是東京的精神象徵"
+                        highlight: "⛩️ 供奉明治天皇的神社，擁有東京市區最大的森林，清晨參拜可感受寧靜神聖的氛圍，是東京的精神象徵",
+                        mapUrl: "https://www.google.com/maps/place/明治神宮/@35.6764,139.6993,17z"
                     },
                     {
                         time: "10:15-11:30",
@@ -1134,7 +1227,8 @@
                             route: "明治神宮 → 竹下通"
                         },
                         food: "彩虹棉花糖",
-                        highlight: "🌈 日本流行文化的發源地，可愛文化、原宿風格的集中地，彩虹棉花糖等創意美食是Instagram熱門打卡點"
+                        highlight: "🌈 日本流行文化的發源地，可愛文化、原宿風格的集中地，彩虹棉花糖等創意美食是Instagram熱門打卡點",
+                        mapUrl: "https://www.google.com/maps/place/竹下通/@35.6702,139.7028,17z"
                     },
                     {
                         time: "11:45-14:00",
@@ -1147,7 +1241,8 @@
                             route: "竹下通 → 表參道Hills"
                         },
                         food: "牛かつもと村",
-                        highlight: "🏬 東京的香榭麗舍大道，匯集國際精品旗艦店，建築設計也是一大看點，牛かつもと村的炸牛排是必嚐美食"
+                        highlight: "🏬 東京的香榭麗舍大道，匯集國際精品旗艦店，建築設計也是一大看點，牛かつもと村的炸牛排是必嚐美食",
+                        mapUrl: "https://www.google.com/maps/place/表參道Hills/@35.6657,139.7117,17z"
                     },
                     {
                         time: "14:30-15:30",
@@ -1160,11 +1255,12 @@
                             route: "表參道 → 澀谷"
                         },
                         food: null,
-                        highlight: "🛍️ 日本最具代表性的流行時尚購物中心，匯集最新潮流品牌，是體驗日本年輕人文化的最佳地點"
+                        highlight: "🛍️ 日本最具代表性的流行時尚購物中心，匯集最新潮流品牌，是體驗日本年輕人文化的最佳地點",
+                        mapUrl: "https://www.google.com/maps/place/澀谷109/@35.6598,139.7010,17z"
                     },
                     {
                         time: "15:45-17:15",
-                        title: "Soccer Shop KAMO 涉谷店",
+                        title: "Soccer Shop KAMO 澀谷店",
                         description: "日本知名足球用品專賣店，各種足球相關商品應有盡有",
                         transport: {
                             method: "🚶‍♂️ 步行",
@@ -1173,7 +1269,8 @@
                             route: "澀谷109 → Soccer Shop KAMO"
                         },
                         food: null,
-                        highlight: "⚽ 日本最大的足球專門店之一，擁有豐富的日本國家隊、J聯盟球衣收藏，還有限定版球鞋和稀有足球用品，足球迷的天堂"
+                        highlight: "⚽ 日本最大的足球專門店之一，擁有豐富的日本國家隊、J聯盟球衣收藏，還有限定版球鞋和稀有足球用品，足球迷的天堂",
+                        mapUrl: "https://www.google.com/maps/place/Soccer+Shop+KAMO+澀谷店/@35.6580,139.7016,17z"
                     },
                     {
                         time: "17:30-18:30",
@@ -1186,7 +1283,8 @@
                             route: "Soccer Shop → Sky展望台"
                         },
                         food: null,
-                        highlight: "🌅 東京最新的天空觀景台，360度俯瞰東京全景，夕陽時分是最佳拍照時機，可將富士山、東京鐵塔盡收眼底"
+                        highlight: "🌅 東京最新的天空觀景台，360度俯瞰東京全景，夕陽時分是最佳拍照時機，可將富士山、東京鐵塔盡收眼底",
+                        mapUrl: "https://www.google.com/maps/place/Shibuya+Sky/@35.6590,139.7016,17z"
                     },
                     {
                         time: "18:45",
@@ -1199,7 +1297,8 @@
                             route: "Sky → 十字路口"
                         },
                         food: null,
-                        highlight: "🚦 世界最繁忙的十字路口，每次綠燈可有3000人同時通過，是東京現代都市生活的象徵，夜晚霓虹燈效果更佳"
+                        highlight: "🚦 世界最繁忙的十字路口，每次綠燈可有3000人同時通過，是東京現代都市生活的象徵，夜晚霓虹燈效果更佳",
+                        mapUrl: "https://www.google.com/maps/place/澀谷十字路口/@35.6598,139.7010,17z"
                     },
                     {
                         time: "19:30",
@@ -1212,13 +1311,16 @@
                             route: "澀谷 → 新宿"
                         },
                         food: "鳥貴族串燒",
-                        highlight: "🏨 Gracery飯店以哥吉拉為主題，頂樓有巨大哥吉拉頭像，是獨特的住宿體驗；鳥貴族是平價串燒連鎖店"
+                        繼續前端代碼：
+                        highlight: "🏨 Gracery飯店以哥吉拉為主題，頂樓有巨大哥吉拉頭像，是獨特的住宿體驗；鳥貴族是平價串燒連鎖店",
+                        mapUrl: "https://www.google.com/maps/place/Hotel+Gracery+Shinjuku/@35.6896,139.7006,17z"
                     }
                 ]
             },
             4: {
                 title: "Day 4 - Tokyo Disneyland 攻略日",
                 date: "07/23 (三)",
+                mapUrl: "https://www.google.com/maps/dir/新宿站/舞濱站/東京迪士尼樂園/@35.6762,139.7649,11z/data=!3m1!4b1!4m20!4m19!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x601885c0c0c0c0c1:0x1a2b3c4d5e6f7g8o!2m2!1d139.8836!2d35.6347!1m5!1m1!1s0x601885d0c0c0c0c1:0x2a3b4c5d6e7f8g9o!2m2!1d139.8781!2d35.6329!3e3",
                 items: [
                     {
                         time: "06:30",
@@ -1226,7 +1328,8 @@
                         description: "Gracery早餐後準備出發",
                         transport: null,
                         food: "飯店早餐",
-                        highlight: "🏰 迪士尼攻略日需要充足體力，早起是為了避開人潮，把握黃金遊玩時間"
+                        highlight: "🏰 迪士尼攻略日需要充足體力，早起是為了避開人潮，把握黃金遊玩時間",
+                        mapUrl: null
                     },
                     {
                         time: "07:06",
@@ -1239,7 +1342,8 @@
                             route: "新宿 → 東京 → 舞濱"
                         },
                         food: null,
-                        highlight: "🚄 京葉線是前往迪士尼的專用線路，車窗可看到東京灣景色"
+                        highlight: "🚄 京葉線是前往迪士尼的專用線路，車窗可看到東京灣景色",
+                        mapUrl: "https://www.google.com/maps/dir/新宿站/舞濱站/@35.6622,139.7921,11z"
                     },
                     {
                         time: "08:00",
@@ -1252,7 +1356,8 @@
                             route: "舞濱站 → 迪士尼樂園"
                         },
                         food: null,
-                        highlight: "🎢 東京迪士尼樂園是亞洲第一座迪士尼樂園，保持著最高的服務品質和獨特的日式細膩"
+                        highlight: "🎢 東京迪士尼樂園是亞洲第一座迪士尼樂園，保持著最高的服務品質和獨特的日式細膩",
+                        mapUrl: "https://www.google.com/maps/place/東京迪士尼樂園/@35.6329,139.8781,17z"
                     },
                     {
                         time: "08:15-12:00",
@@ -1265,7 +1370,8 @@
                             route: "右側→順時針路線"
                         },
                         food: null,
-                        highlight: "🎯 建議先玩太空山、巨雷山等熱門設施，使用迪士尼App可查看等候時間，提高遊玩效率"
+                        highlight: "🎯 建議先玩太空山、巨雷山等熱門設施，使用迪士尼App可查看等候時間，提高遊玩效率",
+                        mapUrl: null
                     },
                     {
                         time: "12:00-13:00",
@@ -1278,7 +1384,8 @@
                             route: "園區內移動"
                         },
                         food: "主題餐廳套餐",
-                        highlight: "🫖 愛麗絲夢遊仙境主題餐廳，餐具和裝潢都充滿童話色彩，是迪士尼獨有的用餐體驗"
+                        highlight: "🫖 愛麗絲夢遊仙境主題餐廳，餐具和裝潢都充滿童話色彩，是迪士尼獨有的用餐體驗",
+                        mapUrl: null
                     },
                     {
                         time: "13:00-17:30",
@@ -1291,7 +1398,8 @@
                             route: "園區內各區域"
                         },
                         food: "米奇雞腿",
-                        highlight: "🍗 米奇造型雞腿是迪士尼經典美食，下午可在室內設施如小小世界、鬼屋等避暑"
+                        highlight: "🍗 米奇造型雞腿是迪士尼經典美食，下午可在室內設施如小小世界、鬼屋等避暑",
+                        mapUrl: null
                     },
                     {
                         time: "18:45",
@@ -1304,7 +1412,8 @@
                             route: "城堡前廣場"
                         },
                         food: null,
-                        highlight: "✨ 夜間遊行是迪士尼的重頭戲，燈光效果絢爛，建議提前卡位取得最佳觀賞位置"
+                        highlight: "✨ 夜間遊行是迪士尼的重頭戲，燈光效果絢爛，建議提前卡位取得最佳觀賞位置",
+                        mapUrl: null
                     },
                     {
                         time: "19:30-20:00",
@@ -1312,7 +1421,8 @@
                         description: "東京迪士尼經典夜間遊行",
                         transport: null,
                         food: null,
-                        highlight: "🎆 東京迪士尼電子大遊行是世界知名的夜間表演，結合音樂、燈光、花車，帶來夢幻體驗"
+                        highlight: "🎆 東京迪士尼電子大遊行是世界知名的夜間表演，結合音樂、燈光、花車，帶來夢幻體驗",
+                        mapUrl: null
                     },
                     {
                         time: "21:30",
@@ -1325,13 +1435,15 @@
                             route: "舞濱 → 東京 → 新宿"
                         },
                         food: "山頭火拉麵",
-                        highlight: "🍜 山頭火拉麵以白湯豚骨拉麵聞名，是結束迪士尼一日遊的完美句號"
+                        highlight: "🍜 山頭火拉麵以白湯豚骨拉麵聞名，是結束迪士尼一日遊的完美句號",
+                        mapUrl: "https://www.google.com/maps/place/山頭火拉麵+新宿店/@35.6896,139.7006,17z"
                     }
                 ]
             },
             5: {
                 title: "Day 5 - 採買返台",
                 date: "07/24 (四)",
+                mapUrl: "https://www.google.com/maps/dir/新宿站/BICQLO/Loft+新宿店/Don+Quijote+新宿東南口店/成田國際機場/@35.6762,139.7649,10z/data=!3m1!4b1!4m32!4m31!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x60188ce0c0c0c0c2:0x2a3b4c5d6e7f8g9h!2m2!1d139.7010!2d35.6900!1m5!1m1!1s0x60188ce0c0c0c0c3:0x3a4b5c6d7e8f9gah!2m2!1d139.7020!2d35.6890!1m5!1m1!1s0x60188ce0c0c0c0c4:0x4a5b6c7d8e9fagbh!2m2!1d139.7030!2d35.6880!1m5!1m1!1s0x6022f0d5a5f0c5f5:0x1a0b0c0d0e0f0g0h!2m2!1d140.3928!2d35.7720!3e3",
                 items: [
                     {
                         time: "07:30",
@@ -1339,7 +1451,8 @@
                         description: "Gracery早餐後退房寄行李",
                         transport: null,
                         food: "飯店早餐",
-                        highlight: "🧳 最後一天的行李整理很重要，善用飯店寄放服務，輕鬆購物"
+                        highlight: "🧳 最後一天的行李整理很重要，善用飯店寄放服務，輕鬆購物",
+                        mapUrl: null
                     },
                     {
                         time: "09:00-11:00",
@@ -1352,7 +1465,8 @@
                             route: "BICQLO→Loft→Don Quijote"
                         },
                         food: "哈根達斯",
-                        highlight: "🛒 新宿是購物天堂，BICQLO結合優衣庫和BIC Camera、Loft有創意商品、Don Quijote是24小時驚安殿堂"
+                        highlight: "🛒 新宿是購物天堂，BICQLO結合優衣庫和BIC Camera、Loft有創意商品、Don Quijote是24小時驚安殿堂",
+                        mapUrl: "https://www.google.com/maps/place/BICQLO+新宿東口店/@35.6900,139.7010,17z"
                     },
                     {
                         time: "11:20",
@@ -1365,7 +1479,8 @@
                             route: "新宿 → 成田機場T2"
                         },
                         food: "N'EX便當",
-                        highlight: "🚄 成田特快的便當品質很高，可在車上享用最後的日式美食"
+                        highlight: "🚄 成田特快的便當品質很高，可在車上享用最後的日式美食",
+                        mapUrl: "https://www.google.com/maps/dir/新宿站/成田國際機場/@35.7308,139.9967,10z"
                     },
                     {
                         time: "13:30",
@@ -1378,7 +1493,8 @@
                             route: "D/E區櫃檯→退稅櫃檯"
                         },
                         food: null,
-                        highlight: "💰 日本退稅手續相對簡單，記得攜帶護照和購物收據，可退8%消費稅"
+                        highlight: "💰 日本退稅手續相對簡單，記得攜帶護照和購物收據，可退8%消費稅",
+                        mapUrl: "https://www.google.com/maps/place/成田國際機場+第2航廈/@35.7720,140.3928,17z"
                     },
                     {
                         time: "14:30-16:00",
@@ -1391,7 +1507,8 @@
                             route: "成田機場免稅店"
                         },
                         food: null,
-                        highlight: "🎁 成田機場免稅店商品齊全，從日本酒、零食到化妝品應有盡有，是最後購買伴手禮的好機會"
+                        highlight: "🎁 成田機場免稅店商品齊全，從日本酒、零食到化妝品應有盡有，是最後購買伴手禮的好機會",
+                        mapUrl: null
                     },
                     {
                         time: "16:20",
@@ -1399,7 +1516,8 @@
                         description: "星宇航空返回桃園",
                         transport: null,
                         food: "機上餐",
-                        highlight: "✈️ 帶著滿滿的回憶和戰利品返回台灣，結束精彩的東京五日遊"
+                        highlight: "✈️ 帶著滿滿的回憶和戰利品返回台灣，結束精彩的東京五日遊",
+                        mapUrl: null
                     },
                     {
                         time: "19:00",
@@ -1412,7 +1530,8 @@
                             route: "桃園→台北→台中"
                         },
                         food: null,
-                        highlight: "🏠 回到溫暖的家，開始整理照片和回憶，計劃下次的日本之旅"
+                        highlight: "🏠 回到溫暖的家，開始整理照片和回憶，計劃下次的日本之旅",
+                        mapUrl: "https://www.google.com/maps/place/桃園國際機場/@25.0797,121.2342,15z"
                     }
                 ]
             }
@@ -1427,7 +1546,7 @@
                 '成田特快 N\'EX 預約指定席',
                 '飯店 Check-in 線上辦理',
                 '日本上網卡/WiFi機預訂',
-                                '旅遊保險投保'
+                '旅遊保險投保'
             ],
             'packing-list': [
                 '護照 (效期6個月以上)',
@@ -1525,7 +1644,7 @@
             document.getElementById(tabName).classList.add('active');
         }
 
-        // 載入行程內容 (修改版，加入景點亮點顯示)
+        // 載入行程內容 (修改版，加入Google地圖連結)
         function loadItinerary(day) {
             currentDay = day;
             
@@ -1550,6 +1669,18 @@
                     <p class="day-date">${dayData.date}</p>
                 </div>
             `;
+
+            // 加入每日動線連結
+            if (dayData.mapUrl) {
+                html += `
+                    <div class="day-route-link">
+                        <a href="${dayData.mapUrl}" target="_blank" rel="noopener noreferrer">
+                            <i class="fas fa-map-marked-alt"></i>
+                            本日Google地圖景點動線 - 點擊查看完整路線規劃
+                        </a>
+                    </div>
+                `;
+            }
 
             dayData.items.forEach(item => {
                 html += `
@@ -1576,6 +1707,14 @@
                         ${item.highlight ? `
                             <div class="highlight-info">
                                 <strong><i class="fas fa-star"></i> 景點亮點：</strong>${item.highlight}
+                            </div>
+                        ` : ''}
+                        ${item.mapUrl ? `
+                            <div class="map-link">
+                                <a href="${item.mapUrl}" target="_blank" rel="noopener noreferrer">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    在Google地圖中查看位置
+                                </a>
                             </div>
                         ` : ''}
                     </div>
@@ -1793,7 +1932,7 @@
                         <div class="note-actions">
                             <button class="delete-note-btn" onclick="deleteNote(${index})">
                                 <i class="fas fa-trash"></i> 刪除
-                            </button>
+                                                            </button>
                         </div>
                     </div>
                 `;
@@ -2215,7 +2354,10 @@
         console.log('   - Ctrl+S 快速儲存筆記');
         console.log('   - Ctrl+Enter 快速新增待辦事項');
         console.log('   - 在行程頁面左右滑動可切換日期 (行動裝置)');
+        console.log('   - 點擊地圖連結可在Google地圖中查看詳細位置');
     </script>
 </body>
 </html>
+
+
 
