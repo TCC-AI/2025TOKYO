@@ -188,6 +188,19 @@
             color: #0c5460;
         }
 
+        /* 新增：景點亮點樣式 */
+        .highlight-info {
+            background: #d4edda;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #28a745;
+        }
+
+        .highlight-info strong {
+            color: #155724;
+        }
+
         /* 交通指南樣式 */
         .transport-section {
             margin-bottom: 40px;
@@ -864,14 +877,14 @@
             </div>
         </main>
 
-        <!-- 浮動操作按鈕 -->
+               <!-- 浮動操作按鈕 -->
         <div class="floating-actions">
             <button id="share-btn" class="fab" title="分享行程">
                 <i class="fas fa-share-alt"></i>
             </button>
             <button id="offline-btn" class="fab" title="離線下載">
                 <i class="fas fa-download"></i>
-                          </button>
+            </button>
         </div>
 
         <!-- 載入中動畫 -->
@@ -891,7 +904,7 @@
         let checklistData = {};
         let notesData = [];
 
-        // 行程資料
+        // 修改後的行程資料 (加入 Soccer Shop KAMO 和景點亮點)
         const ITINERARY_DATA = {
             1: {
                 title: "Day 1 - 抵達東京・輕鬆適應",
@@ -902,14 +915,16 @@
                         title: "JX802 起飛",
                         description: "星宇航空從桃園出發",
                         transport: null,
-                        food: "機上餐"
+                        food: "機上餐",
+                        highlight: "✈️ 星宇航空新航線，機上服務品質優良，飛行時間約3.5小時，開啟東京之旅"
                     },
                     {
                         time: "15:05",
                         title: "抵達成田機場",
                         description: "入境提領行李，預計16:00完成",
                         transport: null,
-                        food: null
+                        food: null,
+                        highlight: "🛬 成田國際機場是東京的主要國際門戶，擁有完善的購物和餐飲設施，入境手續相對快速"
                     },
                     {
                         time: "16:15",
@@ -921,7 +936,8 @@
                             cost: "¥3,070",
                             route: "成田機場 → 新宿站"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🚄 成田特快是連接機場與市區最舒適的方式，車廂寬敞，可欣賞沿途日本鄉村風光"
                     },
                     {
                         time: "17:45",
@@ -933,14 +949,16 @@
                             cost: "免費",
                             route: "新宿站南口 → GROOVE飯店"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🏨 位於新宿核心地帶的現代化飯店，交通便利，房間雖小但設計精巧，體現日本空間利用智慧"
                     },
                     {
                         time: "18:30",
                         title: "房間休息",
                         description: "調整時差，欣賞高樓夜景",
                         transport: null,
-                        food: null
+                        food: null,
+                        highlight: "🌃 新宿高樓林立，夜景璀璨，是調整時差和準備接下來行程的最佳時機"
                     },
                     {
                         time: "19:30-22:00",
@@ -952,7 +970,8 @@
                             cost: "免費",
                             route: "飯店周邊步行範圍"
                         },
-                        food: "思出橫丁「鳥園」"
+                        food: "思出橫丁「鳥園」",
+                        highlight: "🏮 歌舞伎町是東京最著名的不夜城，霓虹燈閃爍，充滿昭和時代懷舊氛圍的思出橫丁更是體驗老東京文化的絕佳地點"
                     }
                 ]
             },
@@ -965,7 +984,8 @@
                         title: "飯店早餐",
                         description: "在飯店享用早餐",
                         transport: null,
-                        food: "飯店早餐"
+                        food: "飯店早餐",
+                        highlight: "🍱 日式飯店早餐通常包含和洋式選擇，品質精緻，為一天的行程補充能量"
                     },
                     {
                         time: "09:00",
@@ -977,7 +997,8 @@
                             cost: "¥200",
                             route: "新宿 → 新橋 → 淺草"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🚇 體驗東京複雜但高效的電車系統，準時性世界聞名"
                     },
                     {
                         time: "09:30-11:00",
@@ -989,7 +1010,8 @@
                             cost: "免費",
                             route: "淺草站 → 雷門 → 淺草寺"
                         },
-                        food: "人形燒"
+                        food: "人形燒",
+                        highlight: "⛩️ 東京最古老的寺廟之一，雷門的巨大燈籠是東京地標，仲見世通保留了江戶時代的商店街風情，人形燒是必嚐傳統點心"
                     },
                     {
                         time: "11:15",
@@ -1001,7 +1023,8 @@
                             cost: "¥1,040",
                             route: "淺草碼頭 → 濱離宮碼頭"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🚢 從水上欣賞東京天際線，可看到東京鐵塔、晴空塔等地標，是獨特的城市觀光體驗"
                     },
                     {
                         time: "12:00-13:30",
@@ -1013,7 +1036,8 @@
                             cost: "入園¥300",
                             route: "碼頭 → 庭園入口"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🌸 江戶時代將軍的離宮庭園，融合傳統日式造景與現代都市景觀，春季櫻花、秋季紅葉都非常美麗"
                     },
                     {
                         time: "14:00-15:30",
@@ -1025,7 +1049,8 @@
                             cost: "免費",
                             route: "濱離宮 → 築地場外"
                         },
-                        food: "海鮮丼"
+                        food: "海鮮丼",
+                        highlight: "🐟 雖然築地市場已遷移，但場外市場依然保持傳統，新鮮海產、玉子燒、鮪魚等美食應有盡有，是老饕必訪之地"
                     },
                     {
                         time: "16:30-19:00",
@@ -1037,7 +1062,8 @@
                             cost: "¥320",
                             route: "築地 → 新橋 → 豊洲"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🎨 世界知名的數位藝術團隊作品，結合科技與藝術，創造出夢幻的沉浸式體驗，需赤腳體驗，與藝術品互動"
                     },
                     {
                         time: "20:00",
@@ -1049,7 +1075,8 @@
                             cost: "¥320",
                             route: "豊洲 → 新橋 → 新宿"
                         },
-                        food: "一蘭拉麵"
+                        food: "一蘭拉麵",
+                        highlight: "🍜 一蘭拉麵的「一人一格」用餐方式是獨特的日本文化體驗，可專心品嚐拉麵的美味"
                     }
                 ]
             },
@@ -1067,7 +1094,8 @@
                             cost: "步行免費/計程車¥730",
                             route: "GROOVE → Gracery"
                         },
-                        food: "便利店早餐"
+                        food: "便利店早餐",
+                        highlight: "🏪 日本便利店早餐選擇豐富，飯糰、三明治、咖啡品質都很高，是快速解決早餐的好選擇"
                     },
                     {
                         time: "08:00",
@@ -1079,7 +1107,8 @@
                             cost: "¥160",
                             route: "新宿 → 原宿"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🚇 山手線是東京最重要的環狀線，連接所有主要區域"
                     },
                     {
                         time: "08:30-10:00",
@@ -1091,7 +1120,8 @@
                             cost: "免費",
                             route: "原宿站西口 → 明治神宮"
                         },
-                        food: null
+                        food: null,
+                        highlight: "⛩️ 供奉明治天皇的神社，擁有東京市區最大的森林，清晨參拜可感受寧靜神聖的氛圍，是東京的精神象徵"
                     },
                     {
                         time: "10:15-11:30",
@@ -1103,7 +1133,8 @@
                             cost: "免費",
                             route: "明治神宮 → 竹下通"
                         },
-                        food: "彩虹棉花糖"
+                        food: "彩虹棉花糖",
+                        highlight: "🌈 日本流行文化的發源地，可愛文化、原宿風格的集中地，彩虹棉花糖等創意美食是Instagram熱門打卡點"
                     },
                     {
                         time: "11:45-14:00",
@@ -1115,31 +1146,47 @@
                             cost: "免費",
                             route: "竹下通 → 表參道Hills"
                         },
-                        food: "牛かつもと村"
+                        food: "牛かつもと村",
+                        highlight: "🏬 東京的香榭麗舍大道，匯集國際精品旗艦店，建築設計也是一大看點，牛かつもと村的炸牛排是必嚐美食"
                     },
                     {
-                        time: "14:30-16:30",
-                        title: "澀谷購物",
-                        description: "109、Center Gai 購物",
+                        time: "14:30-15:30",
+                        title: "澀谷購物 - 109",
+                        description: "澀谷109購物中心，日本流行時尚聖地",
                         transport: {
                             method: "🚇 東京Metro半藏門線",
                             duration: "約3分鐘",
                             cost: "¥170",
                             route: "表參道 → 澀谷"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🛍️ 日本最具代表性的流行時尚購物中心，匯集最新潮流品牌，是體驗日本年輕人文化的最佳地點"
                     },
                     {
-                        time: "17:00-18:30",
+                        time: "15:45-17:15",
+                        title: "Soccer Shop KAMO 涉谷店",
+                        description: "日本知名足球用品專賣店，各種足球相關商品應有盡有",
+                        transport: {
+                            method: "🚶‍♂️ 步行",
+                            duration: "約5分鐘",
+                            cost: "免費",
+                            route: "澀谷109 → Soccer Shop KAMO"
+                        },
+                        food: null,
+                        highlight: "⚽ 日本最大的足球專門店之一，擁有豐富的日本國家隊、J聯盟球衣收藏，還有限定版球鞋和稀有足球用品，足球迷的天堂"
+                    },
+                    {
+                        time: "17:30-18:30",
                         title: "Shibuya Sky 夕陽",
                         description: "澀谷天空展望台看夕陽",
                         transport: {
                             method: "🚶‍♂️ 步行",
                             duration: "約3分鐘",
                             cost: "入場¥2,000",
-                            route: "澀谷站 → Sky展望台"
+                            route: "Soccer Shop → Sky展望台"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🌅 東京最新的天空觀景台，360度俯瞰東京全景，夕陽時分是最佳拍照時機，可將富士山、東京鐵塔盡收眼底"
                     },
                     {
                         time: "18:45",
@@ -1151,7 +1198,8 @@
                             cost: "免費",
                             route: "Sky → 十字路口"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🚦 世界最繁忙的十字路口，每次綠燈可有3000人同時通過，是東京現代都市生活的象徵，夜晚霓虹燈效果更佳"
                     },
                     {
                         time: "19:30",
@@ -1163,7 +1211,8 @@
                             cost: "¥160",
                             route: "澀谷 → 新宿"
                         },
-                        food: "鳥貴族串燒"
+                        food: "鳥貴族串燒",
+                        highlight: "🏨 Gracery飯店以哥吉拉為主題，頂樓有巨大哥吉拉頭像，是獨特的住宿體驗；鳥貴族是平價串燒連鎖店"
                     }
                 ]
             },
@@ -1176,7 +1225,8 @@
                         title: "早餐 + 出發",
                         description: "Gracery早餐後準備出發",
                         transport: null,
-                        food: "飯店早餐"
+                        food: "飯店早餐",
+                        highlight: "🏰 迪士尼攻略日需要充足體力，早起是為了避開人潮，把握黃金遊玩時間"
                     },
                     {
                         time: "07:06",
@@ -1188,7 +1238,8 @@
                             cost: "¥390",
                             route: "新宿 → 東京 → 舞濱"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🚄 京葉線是前往迪士尼的專用線路，車窗可看到東京灣景色"
                     },
                     {
                         time: "08:00",
@@ -1200,7 +1251,8 @@
                             cost: "步行免費/¥260",
                             route: "舞濱站 → 迪士尼樂園"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🎢 東京迪士尼樂園是亞洲第一座迪士尼樂園，保持著最高的服務品質和獨特的日式細膩"
                     },
                     {
                         time: "08:15-12:00",
@@ -1212,7 +1264,8 @@
                             cost: "入園¥10,900",
                             route: "右側→順時針路線"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🎯 建議先玩太空山、巨雷山等熱門設施，使用迪士尼App可查看等候時間，提高遊玩效率"
                     },
                     {
                         time: "12:00-13:00",
@@ -1224,7 +1277,8 @@
                             cost: "餐費約¥2,500",
                             route: "園區內移動"
                         },
-                        food: "主題餐廳套餐"
+                        food: "主題餐廳套餐",
+                        highlight: "🫖 愛麗絲夢遊仙境主題餐廳，餐具和裝潢都充滿童話色彩，是迪士尼獨有的用餐體驗"
                     },
                     {
                         time: "13:00-17:30",
@@ -1236,7 +1290,8 @@
                             cost: "商品費用",
                             route: "園區內各區域"
                         },
-                        food: "米奇雞腿"
+                        food: "米奇雞腿",
+                        highlight: "🍗 米奇造型雞腿是迪士尼經典美食，下午可在室內設施如小小世界、鬼屋等避暑"
                     },
                     {
                         time: "18:45",
@@ -1248,14 +1303,16 @@
                             cost: "免費",
                             route: "城堡前廣場"
                         },
-                        food: null
+                        food: null,
+                        highlight: "✨ 夜間遊行是迪士尼的重頭戲，燈光效果絢爛，建議提前卡位取得最佳觀賞位置"
                     },
                     {
                         time: "19:30-20:00",
                         title: "Electrical Parade",
                         description: "東京迪士尼經典夜間遊行",
                         transport: null,
-                        food: null
+                        food: null,
+                        highlight: "🎆 東京迪士尼電子大遊行是世界知名的夜間表演，結合音樂、燈光、花車，帶來夢幻體驗"
                     },
                     {
                         time: "21:30",
@@ -1267,7 +1324,8 @@
                             cost: "¥390",
                             route: "舞濱 → 東京 → 新宿"
                         },
-                        food: "山頭火拉麵"
+                        food: "山頭火拉麵",
+                        highlight: "🍜 山頭火拉麵以白湯豚骨拉麵聞名，是結束迪士尼一日遊的完美句號"
                     }
                 ]
             },
@@ -1280,7 +1338,8 @@
                         title: "早餐 + 退房",
                         description: "Gracery早餐後退房寄行李",
                         transport: null,
-                        food: "飯店早餐"
+                        food: "飯店早餐",
+                        highlight: "🧳 最後一天的行李整理很重要，善用飯店寄放服務，輕鬆購物"
                     },
                     {
                         time: "09:00-11:00",
@@ -1292,7 +1351,8 @@
                             cost: "免費",
                             route: "BICQLO→Loft→Don Quijote"
                         },
-                        food: "哈根達斯"
+                        food: "哈根達斯",
+                        highlight: "🛒 新宿是購物天堂，BICQLO結合優衣庫和BIC Camera、Loft有創意商品、Don Quijote是24小時驚安殿堂"
                     },
                     {
                         time: "11:20",
@@ -1304,7 +1364,8 @@
                             cost: "使用來回券",
                             route: "新宿 → 成田機場T2"
                         },
-                        food: "N'EX便當"
+                        food: "N'EX便當",
+                        highlight: "🚄 成田特快的便當品質很高，可在車上享用最後的日式美食"
                     },
                     {
                         time: "13:30",
@@ -1316,7 +1377,8 @@
                             cost: "免費",
                             route: "D/E區櫃檯→退稅櫃檯"
                         },
-                        food: null
+                        food: null,
+                        highlight: "💰 日本退稅手續相對簡單，記得攜帶護照和購物收據，可退8%消費稅"
                     },
                     {
                         time: "14:30-16:00",
@@ -1328,14 +1390,16 @@
                             cost: "商品費用",
                             route: "成田機場免稅店"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🎁 成田機場免稅店商品齊全，從日本酒、零食到化妝品應有盡有，是最後購買伴手禮的好機會"
                     },
                     {
                         time: "16:20",
                         title: "JX803起飛",
                         description: "星宇航空返回桃園",
                         transport: null,
-                        food: "機上餐"
+                        food: "機上餐",
+                        highlight: "✈️ 帶著滿滿的回憶和戰利品返回台灣，結束精彩的東京五日遊"
                     },
                     {
                         time: "19:00",
@@ -1347,7 +1411,8 @@
                             cost: "依個人需求",
                             route: "桃園→台北→台中"
                         },
-                        food: null
+                        food: null,
+                        highlight: "🏠 回到溫暖的家，開始整理照片和回憶，計劃下次的日本之旅"
                     }
                 ]
             }
@@ -1362,7 +1427,7 @@
                 '成田特快 N\'EX 預約指定席',
                 '飯店 Check-in 線上辦理',
                 '日本上網卡/WiFi機預訂',
-                '旅遊保險投保'
+                                '旅遊保險投保'
             ],
             'packing-list': [
                 '護照 (效期6個月以上)',
@@ -1460,7 +1525,7 @@
             document.getElementById(tabName).classList.add('active');
         }
 
-        // 載入行程內容
+        // 載入行程內容 (修改版，加入景點亮點顯示)
         function loadItinerary(day) {
             currentDay = day;
             
@@ -1506,6 +1571,11 @@
                         ${item.food ? `
                             <div class="food-info">
                                 <strong><i class="fas fa-utensils"></i> 餐飲：</strong>${item.food}
+                            </div>
+                        ` : ''}
+                        ${item.highlight ? `
+                            <div class="highlight-info">
+                                <strong><i class="fas fa-star"></i> 景點亮點：</strong>${item.highlight}
                             </div>
                         ` : ''}
                     </div>
@@ -1630,7 +1700,7 @@
         function addChecklistItem() {
             const newItemInput = document.getElementById('new-item');
             const categorySelect = document.getElementById('item-category');
-                      const itemText = newItemInput.value.trim();
+            const itemText = newItemInput.value.trim();
             const category = categorySelect.value;
 
             if (!itemText) {
@@ -2148,7 +2218,4 @@
     </script>
 </body>
 </html>
-
-            
-            
 
