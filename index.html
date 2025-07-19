@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -887,1324 +886,1474 @@
                 <div class="checklist-section">
                     <h2><i class="fas fa-tasks"></i> 出發前準備</h2>
                     <div class="checklist-category">
-                        <h3><i class="fas fa-globe"></i>線上預約 (出發前60天)</h3>
-                <div class="checklist-items" id="online-booking">
-                <!-- 動態載入待辦事項 -->
-                </div>
-                </div>
-                <div class="checklist-category">
-                <h3><i class="fas fa-suitcase"></i> 行李準備</h3>
-                <div class="checklist-items" id="packing-list">
-                <!-- 動態載入待辦事項 -->
-                </div>
-                </div>
-                <div class="checklist-category">
-                <h3><i class="fas fa-passport"></i> 證件文件</h3>
-                <div class="checklist-items" id="documents">
-                <!-- 動態載入待辦事項 -->
-                </div>
-                </div>
-                <div class="add-item-form">
-                <input type="text" id="new-item" placeholder="新增待辦事項...">
-                <select id="item-category">
-                <option value="online-booking">線上預約</option>
-                <option value="packing-list">行李準備</option>
-                <option value="documents">證件文件</option>
-                </select>
-                <button id="add-item" class="btn-primary">
-                <i class="fas fa-plus"></i> 新增
-                </button>
-                </div>
-                
-
-        <!-- 旅遊筆記頁面 -->
-        <div id="notes" class="tab-content">
-            <div class="notes-section">
-                <h2><i class="fas fa-pen"></i> 旅遊筆記</h2>
-                <div class="note-form">
-                    <input type="text" id="note-title" placeholder="筆記標題">
-                    <textarea id="note-content" placeholder="記錄你的旅遊心得、重要提醒或臨時變更..."></textarea>
-                    <button id="save-note" class="btn-primary">
-                        <i class="fas fa-save"></i> 儲存筆記
-                    </button>
-                </div>
-                <div id="notes-list" class="notes-list">
-                    <!-- 動態載入筆記列表 -->
+                        <h3><i class="fas fa-globe"></i> 線上預約 (出發前60天)</h3>
+                        <div class="checklist-items" id="online-booking">
+                            <!-- 動態載入待辦事項 -->
+                        </div>
+                    </div>
+                    <div class="checklist-category">
+                        <h3><i class="fas fa-suitcase"></i> 行李準備</h3>
+                        <div class="checklist-items" id="packing-list">
+                            <!-- 動態載入待辦事項 -->
+                        </div>
+                    </div>
+                    <div class="checklist-category">
+                        <h3><i class="fas fa-passport"></i> 證件文件</h3>
+                                                <div class="checklist-items" id="documents">
+                            <!-- 動態載入待辦事項 -->
+                        </div>
+                    </div>
+                    <div class="add-item-form">
+                        <input type="text" id="new-item" placeholder="新增待辦事項...">
+                        <select id="item-category">
+                            <option value="online-booking">線上預約</option>
+                            <option value="packing-list">行李準備</option>
+                            <option value="documents">證件文件</option>
+                        </select>
+                        <button id="add-item" class="btn-primary">
+                            <i class="fas fa-plus"></i> 新增
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            <!-- 旅遊筆記頁面 -->
+            <div id="notes" class="tab-content">
+                <div class="notes-section">
+                    <h2><i class="fas fa-pen"></i> 旅遊筆記</h2>
+                    <div class="note-form">
+                        <input type="text" id="note-title" placeholder="筆記標題">
+                        <textarea id="note-content" placeholder="記錄你的旅遊心得、重要提醒或臨時變更..."></textarea>
+                        <button id="save-note" class="btn-primary">
+                            <i class="fas fa-save"></i> 儲存筆記
+                        </button>
+                    </div>
+                    <div id="notes-list" class="notes-list">
+                        <!-- 動態載入筆記列表 -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 浮動操作按鈕 -->
+        <div class="floating-actions">
+            <button id="share-btn" class="fab" title="分享行程">
+                <i class="fas fa-share-alt"></i>
+            </button>
+            <button id="offline-btn" class="fab" title="離線下載">
+                <i class="fas fa-download"></i>
+            </button>
         </div>
-    </main>
 
-    <!-- 浮動操作按鈕 -->
-    <div class="floating-actions">
-        <button id="share-btn" class="fab" title="分享行程">
-            <i class="fas fa-share-alt"></i>
-        </button>
-        <button id="offline-btn" class="fab" title="離線下載">
-            <i class="fas fa-download"></i>
-        </button>
+        <!-- 載入中動畫 -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>載入中...</p>
+        </div>
     </div>
 
-    <!-- 載入中動畫 -->
-    <div id="loading" class="loading hidden">
-        <div class="spinner"></div>
-        <p>載入中...</p>
-    </div>
-</div>
-
-<script>
-    // ==================== JavaScript 代碼 ==================== 
-    
-    // 全域變數
-    const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzjB7WMI9c_Tb1FLX2E3rhgAFhySdS-63dUFdHjKCIhc0LtYtLI9x2WbPpGtpmtkeb5/exec';
-    let currentDay = 1;
-    let budgetData = {};
-    let checklistData = {};
-    let notesData = [];
-
-    // 修改後的行程資料 - Day 3 重新調整時間
-    const ITINERARY_DATA = {
-        1: {
-            title: "Day 1 - 抵達東京・輕鬆適應",
-            date: "07/20 (日)",
-            mapUrl: "https://www.google.com/maps/dir/成田國際機場/新宿站/歌舞伎町/思出橫丁/@35.6762,139.7649,11z/data=!3m1!4b1!4m26!4m25!1m5!1m1!1s0x6022f0d5a5f0c5f5:0x1a0b0c0d0e0f0g0h!2m2!1d140.3928!2d35.7720!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x60188cd0c0c0c0c2:0x2a3b4c5d6e7f8g9h!2m2!1d139.7044!2d35.6938!1m5!1m1!1s0x60188cd0c0c0c0c3:0x3a4b5c6d7e8f9gah!2m2!1d139.7037!2d35.6944!3e3",
-            items: [
-                {
-                    time: "10:40",
-                    title: "JX802 起飛",
-                    description: "星宇航空從桃園出發",
-                    transport: null,
-                    food: "機上餐",
-                    highlight: "✈️ 星宇航空新航線，機上服務品質優良，飛行時間約3.5小時，開啟東京之旅",
-                    mapUrl: "https://www.google.com/maps/place/桃園國際機場/@25.0797,121.2342,15z"
-                },
-                {
-                    time: "15:05",
-                    title: "抵達成田機場",
-                    description: "入境提領行李，預計16:00完成",
-                    transport: null,
-                    food: null,
-                    highlight: "🛬 成田國際機場是東京的主要國際門戶，擁有完善的購物和餐飲設施，入境手續相對快速",
-                    mapUrl: "https://www.google.com/maps/place/成田國際機場/@35.7720,140.3928,15z"
-                },
-                {
-                    time: "16:15",
-                    title: "前往新宿",
-                    description: "搭乘成田特快前往新宿",
-                    transport: {
-                        method: "🚄 JR Narita Express",
-                        duration: "約80分鐘",
-                        cost: "¥3,070",
-                        route: "成田機場 → 新宿站"
-                    },
-                    food: null,
-                    highlight: "🚄 成田特快是連接機場與市區最舒適的方式，車廂寬敞，可欣賞沿途日本鄉村風光",
-                    mapUrl: "https://www.google.com/maps/dir/成田國際機場/新宿站/@35.7308,139.9967,10z"
-                },
-                {
-                    time: "17:45",
-                    title: "GROOVE飯店 Check-in",
-                    description: "抵達新宿，辦理入住手續",
-                    transport: {
-                        method: "🚶‍♂️ 步行",
-                        duration: "約3分鐘",
-                        cost: "免費",
-                        route: "新宿站南口 → GROOVE飯店"
-                    },
-                    food: null,
-                    highlight: "🏨 位於新宿核心地帶的現代化飯店，交通便利，房間雖小但設計精巧，體現日本空間利用智慧",
-                    mapUrl: "https://www.google.com/maps/place/Hotel+Groove+Shinjuku/@35.6896,139.7006,17z"
-                },
-                {
-                    time: "18:30",
-                    title: "房間休息",
-                    description: "調整時差，欣賞高樓夜景",
-                    transport: null,
-                    food: null,
-                    highlight: "🌃 新宿高樓林立，夜景璀璨，是調整時差和準備接下來行程的最佳時機",
-                    mapUrl: null
-                },
-                {
-                    time: "19:30-22:00",
-                    title: "歌舞伎町散步",
-                    description: "體驗東京夜生活，思出橫丁晚餐",
-                    transport: {
-                        method: "🚶‍♂️ 步行",
-                        duration: "2-8分鐘",
-                        cost: "免費",
-                        route: "飯店周邊步行範圍"
-                    },
-                    food: "思出橫丁「鳥園」",
-                    highlight: "🏮 歌舞伎町是東京最著名的不夜城，霓虹燈閃爍，充滿昭和時代懷舊氛圍的思出橫丁更是體驗老東京文化的絕佳地點",
-                    mapUrl: "https://www.google.com/maps/place/思出橫丁/@35.6944,139.7037,17z"
-                }
-            ]
-        },
-        2: {
-            title: "Day 2 - 下町文化 + 現代藝術 + 秋葉原動漫",
-            date: "07/21 (一)",
-            mapUrl: "https://www.google.com/maps/dir/新宿站/淺草寺/濱離宮恩賜庭園/築地場外市場/秋葉原電器街/teamLab+Planets+豊洲/@35.6762,139.7649,12z/data=!3m1!4b1!4m38!4m37!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x60188ec0c0c0c0c1:0x1a2b3c4d5e6f7g8i!2m2!1d139.7966!2d35.7148!1m5!1m1!1s0x60188be0c0c0c0c1:0x1a2b3c4d5e6f7g8j!2m2!1d139.7637!2d35.6596!1m5!1m1!1s0x60188be0c0c0c0c2:0x2a3b4c5d6e7f8g9j!2m2!1d139.7707!2d35.6654!1m5!1m1!1s0x60188c0c0c0c0c01:0x3a4b5c6d7e8f9gak!2m2!1d139.7731!2d35.7022!1m5!1m1!1s0x601889f0c0c0c0c1:0x4a5b6c7d8e9fagbl!2m2!1d139.7946!2d35.6490!3e3",
-            items: [
-                {
-                    time: "07:30",
-                    title: "飯店早餐",
-                    description: "在飯店享用早餐",
-                    transport: null,
-                    food: "飯店早餐",
-                    highlight: "🍱 日式飯店早餐通常包含和洋式選擇，品質精緻，為一天的行程補充能量",
-                    mapUrl: null
-                },
-                {
-                    time: "09:00",
-                    title: "前往淺草",
-                    description: "搭乘電車前往淺草寺",
-                    transport: {
-                        method: "🚇 JR+都營淺草線",
-                        duration: "約35分鐘",
-                        cost: "¥200",
-                        route: "新宿 → 新橋 → 淺草"
-                    },
-                    food: null,
-                    highlight: "🚇 體驗東京複雜但高效的電車系統，準時性世界聞名",
-                    mapUrl: "https://www.google.com/maps/dir/新宿站/淺草站/@35.6762,139.7649,12z"
-                },
-                {
-                    time: "09:30-11:00",
-                    title: "淺草寺參拜",
-                    description: "雷門拍照，仲見世通購物",
-                    transport: {
-                        method: "🚶‍♂️ 步行",
-                        duration: "出站即達",
-                        cost: "免費",
-                        route: "淺草站 → 雷門 → 淺草寺"
-                    },
-                    food: "人形燒",
-                    highlight: "⛩️ 東京最古老的寺廟之一，雷門的巨大燈籠是東京地標，仲見世通保留了江戶時代的商店街風情，人形燒是必嚐傳統點心",
-                    mapUrl: "https://www.google.com/maps/place/淺草寺/@35.7148,139.7966,17z"
-                },
-                {
-                    time: "11:15",
-                    title: "隅田川水上巴士",
-                    description: "搭乘水上巴士前往濱離宮",
-                    transport: {
-                        method: "🚢 水上巴士",
-                        duration: "約35分鐘",
-                        cost: "¥1,040",
-                        route: "淺草碼頭 → 濱離宮碼頭"
-                    },
-                    food: null,
-                    highlight: "🚢 從水上欣賞東京天際線，可看到東京鐵塔、晴空塔等地標，是獨特的城市觀光體驗",
-                    mapUrl: "https://www.google.com/maps/dir/淺草碼頭/濱離宮恩賜庭園/@35.6872,139.7802,13z"
-                },
-                {
-                    time: "12:00-13:30",
-                    title: "濱離宮恩賜庭園",
-                    description: "日式庭園散步，欣賞東京灣景色",
-                    transport: {
-                        method: "🚶‍♂️ 碼頭直達",
-                        duration: "即達",
-                        cost: "入園¥300",
-                        route: "碼頭 → 庭園入口"
-                    },
-                    food: null,
-                    highlight: "🌸 江戶時代將軍的離宮庭園，融合傳統日式造景與現代都市景觀，春季櫻花、秋季紅葉都非常美麗",
-                    mapUrl: "https://www.google.com/maps/place/濱離宮恩賜庭園/@35.6596,139.7637,17z"
-                },
-                {
-                    time: "14:00-15:30",
-                    title: "築地場外市場",
-                    description: "品嚐新鮮海鮮丼",
-                    transport: {
-                        method: "🚶‍♂️ 步行",
-                        duration: "約10分鐘",
-                        cost: "免費",
-                        route: "濱離宮 → 築地場外"
-                    },
-                    food: "海鮮丼",
-                    highlight: "🐟 雖然築地市場已遷移，但場外市場依然保持傳統，新鮮海產、玉子燒、鮪魚等美食應有盡有，是老饕必訪之地",
-                    mapUrl: "https://www.google.com/maps/place/築地場外市場/@35.6654,139.7707,17z"
-                },
-                {
-                    time: "16:00-18:00",
-                    title: "秋葉原電器街 - 動畫模型採購",
-                    description: "動漫聖地巡禮，購買限定模型和周邊商品",
-                    transport: {
-                        method: "🚇 都營大江戶線+JR",
-                        duration: "約20分鐘",
-                        cost: "¥280",
-                        route: "築地市場 → 新橋 → 秋葉原"
-                    },
-                    food: "女僕咖啡廳",
-                    highlight: "🤖 世界知名的電器和動漫文化中心，從最新的電子產品到稀有的動畫模型應有盡有，女僕咖啡廳是獨特的日本次文化體驗",
-                    mapUrl: "https://www.google.com/maps/place/秋葉原電器街/@35.7022,139.7731,17z"
-                },
-                {
-                    time: "18:30-20:30",
-                    title: "teamLab Planets 豊洲",
-                    description: "沉浸式數位藝術體驗",
-                    transport: {
-                        method: "🚇 JR+百合海鷗線",
-                        duration: "約25分鐘",
-                        cost: "¥320",
-                        route: "秋葉原 → 新橋 → 豊洲"
-                    },
-                    food: null,
-                    highlight: "🎨 世界知名的數位藝術團隊作品，結合科技與藝術，創造出夢幻的沉浸式體驗，需赤腳體驗，與藝術品互動",
-                    mapUrl: "https://www.google.com/maps/place/teamLab+Planets+TOKYO/@35.6490,139.7946,17z"
-                },
-                {
-                    time: "21:30",
-                    title: "回新宿晚餐",
-                    description: "回到新宿享用拉麵",
-                    transport: {
-                        method: "🚇 百合海鷗線+JR",
-                        duration: "約35分鐘",
-                        cost: "¥320",
-                        route: "豊洲 → 新橋 → 新宿"
-                    },
-                    food: "一蘭拉麵",
-                    highlight: "🍜 一蘭拉麵的「一人一格」用餐方式是獨特的日本文化體驗，可專心品嚐拉麵的美味",
-                    mapUrl: "https://www.google.com/maps/place/一蘭拉麵+新宿店/@35.6896,139.7006,17z"
-                }
-            ]
-        },
-        3: {
-            title: "Day 3 - 原宿澀谷潮流 + 轉住Gracery",
-            date: "07/22 (二)",
-            mapUrl: "https://www.google.com/maps/dir/新宿站/明治神宮/竹下通/Shibuya+Sky/表參道Hills/澀谷109/Soccer+Shop+KAMO+澀谷店/@35.6762,139.7649,13z/data=!3m1!4b1!4m50!4m49!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x60188ca0c0c0c0c1:0x1a2b3c4d5e6f7g8k!2m2!1d139.6993!2d35.6764!1m5!1m1!1s0x60188ca0c0c0c0c2:0x2a3b4c5d6e7f8g9k!2m2!1d139.7028!2d35.6702!1m5!1m1!1s0x60188ca0c0c0c0c6:0x6a7b8c9daeafbgcdn!2m2!1d139.7016!2d35.6590!1m5!1m1!1s0x60188ca0c0c0c0c3:0x3a4b5c6d7e8f9gak!2m2!1d139.7117!2d35.6657!1m5!1m1!1s0x60188ca0c0c0c0c4:0x4a5b6c7d8e9fagbl!2m2!1d139.7010!2d35.6598!1m5!1m1!1s0x60188ca0c0c0c0c5:0x5a6b7c8d9eafbgcm!2m2!1d139.7016!2d35.6580!3e3",
-            items: [
-                {
-                    time: "07:30",
-                    title: "GROOVE 退房",
-                    description: "退房後步行至 Gracery 寄行李",
-                    transport: {
-                        method: "🚶‍♂️ 步行/計程車",
-                        duration: "約8分鐘",
-                        cost: "步行免費/計程車¥730",
-                        route: "GROOVE → Gracery"
-                    },
-                    food: "便利店早餐",
-                    highlight: "🏪 日本便利店早餐選擇豐富，飯糰、三明治、咖啡品質都很高，是快速解決早餐的好選擇",
-                    mapUrl: "https://www.google.com/maps/dir/Hotel+Groove+Shinjuku/Hotel+Gracery+Shinjuku/@35.6896,139.7006,17z"
-                },
-                {
-                    time: "08:00",
-                    title: "前往原宿",
-                    description: "搭乘山手線前往原宿站",
-                    transport: {
-                        method: "🚇 JR山手線",
-                        duration: "約7分鐘",
-                        cost: "¥160",
-                        route: "新宿 → 原宿"
-                    },
-                    food: null,
-                    highlight: "🚇 山手線是東京最重要的環狀線，連接所有主要區域",
-                    mapUrl: "https://www.google.com/maps/dir/新宿站/原宿站/@35.6829,139.7000,14z"
-                },
-                {
-                    time: "08:30-10:00",
-                    title: "明治神宮參拜",
-                    description: "東京最重要的神社參拜",
-                    transport: {
-                        method: "🚶‍♂️ 步行",
-                        duration: "約3分鐘",
-                        cost: "免費",
-                        route: "原宿站西口 → 明治神宮"
-                    },
-                    food: null,
-                    highlight: "⛩️ 供奉明治天皇的神社，擁有東京市區最大的森林，清晨參拜可感受寧靜神聖的氛圍，是東京的精神象徵",
-                    mapUrl: "https://www.google.com/maps/place/明治神宮/@35.6764,139.6993,17z"
-                },
-                {
-                    time: "10:15-11:30",
-                    title: "竹下通逛街",
-                    description: "青少年文化聖地購物",
-                    transport: {
-                        method: "🚶‍♂️ 步行",
-                        duration: "約3分鐘",
-                        cost: "免費",
-                        route: "明治神宮 → 竹下通"
-                    },
-                    food: "彩虹棉花糖",
-                    highlight: "🌈 日本流行文化的發源地，可愛文化、原宿風格的集中地，彩虹棉花糖等創意美食是Instagram熱門打卡點",
-                    mapUrl: "https://www.google.com/maps/place/竹下通/@35.6702,139.7028,17z"
-                },
-                {
-                    time: "11:45-12:30",
-                    title: "前往澀谷",
-                    description: "搭乘山手線前往澀谷",
-                    transport: {
-                        method: "🚇 JR山手線",
-                        duration: "約7分鐘",
-                        cost: "¥160",
-                        route: "原宿 → 澀谷"
-                    },
-                    food: null,
-                    highlight: "🚇 調整行程順序，先到澀谷體驗天空展望台，避開下午人潮",
-                    mapUrl: "https://www.google.com/maps/dir/原宿站/澀谷站/@35.6750,139.7020,14z"
-                },
-                {
-                    time: "12:30-13:30",
-                    title: "澀谷午餐",
-                    description: "在澀谷享用午餐",
-                    transport: {
-                        method: "🚶‍♂️ 澀谷站周邊",
-                        duration: "步行範圍",
-                        cost: "免費",
-                        route: "澀谷站周邊"
-                    },
-                    food: "牛かつもと村 澀谷店",
-                    highlight: "🥩 在澀谷分店享用知名炸牛排，為接下來的行程補充體力，用餐時間剛好避開Shibuya Sky的人潮高峰",
-                    mapUrl: "https://www.google.com/maps/place/牛かつもと村+澀谷店/@35.6590,139.7010,17z"
-                },
-                {
-                    time: "13:40-14:40",
-                    title: "Shibuya Sky 觀景",
-                    description: "澀谷天空展望台360度全景",
-                    transport: {
-                        method: "🚶‍♂️ 步行",
-                        duration: "約3分鐘",
-                        cost: "入場¥2,000",
-                        route: "餐廳 → Sky展望台"
-                    },
-                    food: null,
-                    highlight: "🌅 東京最新的天空觀景台，360度俯瞰東京全景，下午時段光線適中，可將富士山、東京鐵塔盡收眼底，避開夕陽時段的擁擠人潮",
-                    mapUrl: "https://www.google.com/maps/place/Shibuya+Sky/@35.6590,139.7016,17z"
-                },
-                {
-                    time: "15:00-16:00",
-                    title: "澀谷109購物",
-                    description: "日本流行時尚購物中心",
-                    transport: {
-                        method: "🚶‍♂️ 步行",
-                        duration: "約3分鐘",
-                        cost: "免費",
-                        route: "Sky → 澀谷109"
-                    },
-                    food: null,
-                    highlight: "🛍️ 日本最具代表性的流行時尚購物中心，匯集最新潮流品牌，是體驗日本年輕人文化的最佳地點",
-                    mapUrl: "https://www.google.com/maps/place/澀谷109/@35.6598,139.7010,17z"
-                },
-                {
-                    time: "16:15-17:15",
-                    title: "Soccer Shop KAMO 澀谷店",
-                    description: "足球用品專賣店採購",
-                    transport: {
-                        method: "🚶‍♂️ 步行",
-                        duration: "約5分鐘",
-                        cost: "免費",
-                        route: "澀谷109 → Soccer Shop KAMO"
-                    },
-                    food: null,
-                    highlight: "⚽ 日本最大的足球專門店之一，擁有豐富的日本國家隊、J聯盟球衣收藏，還有限定版球鞋和稀有足球用品，足球迷的天堂",
-                    mapUrl: "https://www.google.com/maps/place/Soccer+Shop+KAMO+澀谷店/@35.6580,139.7016,17z"
-                },
-                {
-                    time: "17:30-18:30",
-                    title: "表參道精品街",
-                    description: "高級精品購物街漫步",
-                    transport: {
-                        method: "🚇東京Metro半藏門線",
-duration: "約3分鐘",
-cost: "¥170",
-route: "澀谷 → 表參道"
-},
-food: null,
-highlight: "🏬 東京的香榭麗舍大道，匯集國際精品旗艦店，建築設計也是一大看點，黃昏時分的表參道特別優雅",
-mapUrl: "https://www.google.com/maps/place/表參道Hills/@35.6657,139.7117,17z"
-},
-{
-time: "18:45",
-title: "澀谷十字路口",
-description: "世界最繁忙十字路口拍照",
-transport: {
-method: "🚇 東京Metro半藏門線",
-duration: "約3分鐘",
-cost: "¥170",
-route: "表參道 → 澀谷"
-},
-food: null,
-highlight: "🚦 世界最繁忙的十字路口，每次綠燈可有3000人同時通過，是東京現代都市生活的象徵，夜晚霓虹燈效果更佳",
-mapUrl: "https://www.google.com/maps/place/澀谷十字路口/@35.6598,139.7010,17z"
-},
-{
-time: "19:30",
-title: "回新宿 Check-in",
-description: "回到新宿 Gracery 辦理入住",
-transport: {
-method: "🚇 JR山手線",
-duration: "約7分鐘",
-cost: "¥160",
-route: "澀谷 → 新宿"
-},
-food: "鳥貴族串燒",
-highlight: "🏨 Gracery飯店以哥吉拉為主題，頂樓有巨大哥吉拉頭像，是獨特的住宿體驗；鳥貴族是平價串燒連鎖店，完美結束一天的行程",
-mapUrl: "https://www.google.com/maps/place/Hotel+Gracery+Shinjuku/@35.6896,139.7006,17z"
-}
-]
-},
-4: {
-title: "Day 4 - Tokyo Disneyland 攻略日",
-date: "07/23 (三)",
-mapUrl: "https://www.google.com/maps/dir/新宿站/舞濱站/東京迪士尼樂園/@35.6762,139.7649,11z/data=!3m1!4b1!4m20!4m19!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x601885c0c0c0c0c1:0x1a2b3c4d5e6f7g8o!2m2!1d139.8836!2d35.6347!1m5!1m1!1s0x601885d0c0c0c0c1:0x2a3b4c5d6e7f8g9o!2m2!1d139.8781!2d35.6329!3e3",
-items: [
-{
-time: "06:30",
-title: "早餐 + 出發",
-description: "Gracery早餐後準備出發",
-transport: null,
-food: "飯店早餐",
-highlight: "🏰 迪士尼攻略日需要充足體力，早起是為了避開人潮，把握黃金遊玩時間",
-mapUrl: null
-},
-{
-time: "07:06",
-title: "前往迪士尼",
-description: "搭乘JR前往舞濱站",
-transport: {
-method: "🚇 JR中央線+京葉線",
-duration: "約45分鐘",
-cost: "¥390",
-route: "新宿 → 東京 → 舞濱"
-},
-food: null,
-highlight: "🚄 京葉線是前往迪士尼的專用線路，車窗可看到東京灣景色",
-mapUrl: "https://www.google.com/maps/dir/新宿站/舞濱站/@35.6622,139.7921,11z"
-},
-{
-time: "08:00",
-title: "抵達迪士尼樂園",
-description: "開園前排隊入場",
-transport: {
-method: "🚶‍♂️ 步行/度假區線",
-duration: "約5分鐘",
-cost: "步行免費/¥260",
-route: "舞濱站 → 迪士尼樂園"
-},
-food: null,
-highlight: "🎢 東京迪士尼樂園是亞洲第一座迪士尼樂園，保持著最高的服務品質和獨特的日式細膩",
-mapUrl: "https://www.google.com/maps/place/東京迪士尼樂園/@35.6329,139.8781,17z"
-},
-{
-time: "08:15-12:00",
-title: "上午高效攻略",
-description: "從右側開始順時針遊玩熱門設施",
-transport: {
-method: "🎢 園區內步行",
-duration: "善用App查詢",
-cost: "入園¥10,900",
-route: "右側→順時針路線"
-},
-food: null,
-highlight: "🎯 建議先玩太空山、巨雷山等熱門設施，使用迪士尼App可查看等候時間，提高遊玩效率",
-mapUrl: null
-},
-{
-time: "12:00-13:00",
-title: "Queen of Hearts 午餐",
-description: "愛麗絲主題餐廳用餐",
-transport: {
-method: "🚶‍♂️ 園區內步行",
-duration: "位於夢幻樂園",
-cost: "餐費約¥2,500",
-route: "園區內移動"
-},
-food: "主題餐廳套餐",
-highlight: "🫖 愛麗絲夢遊仙境主題餐廳，餐具和裝潢都充滿童話色彩，是迪士尼獨有的用餐體驗",
-mapUrl: null
-},
-{
-time: "13:00-17:30",
-title: "下午遊玩",
-description: "室內設施避暑，購物休息",
-transport: {
-method: "🎢 園區內移動",
-duration: "多利用室內設施",
-cost: "商品費用",
-route: "園區內各區域"
-},
-food: "米奇雞腿",
-highlight: "🍗 米奇造型雞腿是迪士尼經典美食，下午可在室內設施如小小世界、鬼屋等避暑",
-mapUrl: null
-},
-{
-time: "18:45",
-title: "卡位等夜間遊行",
-description: "在城堡前廣場卡位",
-transport: {
-method: "🚶‍♂️ 遊行路線卡位",
-duration: "提前45分鐘",
-cost: "免費",
-route: "城堡前廣場"
-},
-food: null,
-highlight: "✨ 夜間遊行是迪士尼的重頭戲，燈光效果絢爛，建議提前卡位取得最佳觀賞位置",
-mapUrl: null
-},
-{
-time: "19:30-20:00",
-title: "Electrical Parade",
-description: "東京迪士尼經典夜間遊行",
-transport: null,
-food: null,
-highlight: "🎆 東京迪士尼電子大遊行是世界知名的夜間表演，結合音樂、燈光、花車，帶來夢幻體驗",
-mapUrl: null
-},
-{
-time: "21:30",
-title: "回新宿",
-description: "搭乘JR回到新宿",
-transport: {
-method: "🚇 JR京葉線+中央線",
-duration: "約45分鐘",
-cost: "¥390",
-route: "舞濱 → 東京 → 新宿"
-},
-food: "山頭火拉麵",
-highlight: "🍜 山頭火拉麵以白湯豚骨拉麵聞名，是結束迪士尼一日遊的完美句號",
-mapUrl: "https://www.google.com/maps/place/山頭火拉麵+新宿店/@35.6896,139.7006,17z"
-}
-]
-},
-5: {
-title: "Day 5 - 採買返台",
-date: "07/24 (四)",
-mapUrl: "https://www.google.com/maps/dir/新宿站/BICQLO/Loft+新宿店/Don+Quijote+新宿東南口店/成田國際機場/@35.6762,139.7649,10z/data=!3m1!4b1!4m32!4m31!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x60188ce0c0c0c0c2:0x2a3b4c5d6e7f8g9h!2m2!1d139.7010!2d35.6900!1m5!1m1!1s0x60188ce0c0c0c0c3:0x3a4b5c6d7e8f9gah!2m2!1d139.7020!2d35.6890!1m5!1m1!1s0x60188ce0c0c0c0c4:0x4a5b6c7d8e9fagbh!2m2!1d139.7030!2d35.6880!1m5!1m1!1s0x6022f0d5a5f0c5f5:0x1a0b0c0d0e0f0g0h!2m2!1d140.3928!2d35.7720!3e3",
-items: [
-{
-time: "07:30",
-title: "早餐 + 退房",
-description: "Gracery早餐後退房寄行李",
-transport: null,
-food: "飯店早餐",
-highlight: "🧳 最後一天的行李整理很重要，善用飯店寄放服務，輕鬆購物",
-mapUrl: null
-},
-{
-time: "09:00-11:00",
-title: "最後採買",
-description: "新宿站周邊最後購物",
-transport: {
-method: "🚶‍♂️ 新宿站周邊步行",
-duration: "全部徒步可達",
-cost: "免費",
-route: "BICQLO→Loft→Don Quijote"
-},
-food: "哈根達斯",
-highlight: "🛒 新宿是購物天堂，BICQLO結合優衣庫和BIC Camera、Loft有創意商品、Don Quijote是24小時驚安殿堂",
-mapUrl: "https://www.google.com/maps/place/BICQLO+新宿東口店/@35.6900,139.7010,17z"
-},
-{
-time: "11:20",
-title: "前往成田機場",
-description: "搭乘成田特快前往機場",
-transport: {
-method: "🚄 JR Narita Express",
-duration: "約80分鐘",
-cost: "使用來回券",
-route: "新宿 → 成田機場T2"
-},
-food: "N'EX便當",
-highlight: "🚄 成田特快的便當品質很高，可在車上享用最後的日式美食",
-mapUrl: "https://www.google.com/maps/dir/新宿站/成田國際機場/@35.7308,139.9967,10z"
-},
-{
-time: "13:30",
-title: "機場報到 + 退稅",
-description: "星宇櫃檯報到，4F退稅",
-transport: {
-method: "🚶‍♂️ 成田T2內移動",
-duration: "預留充足時間",
-cost: "免費",
-route: "D/E區櫃檯→退稅櫃檯"
-},
-food: null,
-highlight: "💰 日本退稅手續相對簡單，記得攜帶護照和購物收據，可退8%消費稅",
-mapUrl: "https://www.google.com/maps/place/成田國際機場+第2航廈/@35.7720,140.3928,17z"
-},
-{
-time: "14:30-16:00",
-title: "免稅店採購",
-description: "最後伴手禮採購",
-transport: {
-method: "🚶‍♂️ 免稅店區域",
-duration: "預留充足時間",
-cost: "商品費用",
-route: "成田機場免稅店"
-},
-food: null,
-highlight: "🎁 成田機場免稅店商品齊全，從日本酒、零食到化妝品應有盡有，是最後購買伴手禮的好機會",
-mapUrl: null
-},
-{
-time: "16:20",
-title: "JX803起飛",
-description: "星宇航空返回桃園",
-transport: null,
-food: "機上餐",
-highlight: "✈️ 帶著滿滿的回憶和戰利品返回台灣，結束精彩的東京五日遊",
-mapUrl: null
-},
-{
-time: "19:00",
-title: "抵達桃園",
-description: "順利返回台灣",
-transport: {
-method: "🚄 機捷+高鐵",
-duration: "可當天回台中",
-cost: "依個人需求",
-route: "桃園→台北→台中"
-},
-food: null,
-highlight: "🏠 回到溫暖的家，開始整理照片和回憶，計劃下次的日本之旅",
-mapUrl: "https://www.google.com/maps/place/桃園國際機場/@25.0797,121.2342,15z"
-}
-]
-}
-};
-        // 預設待辦清單資料
-    const DEFAULT_CHECKLIST = {
-        'online-booking': [
-            '迪士尼樂園門票預購',
-            'teamLab Planets 預約',
-            'Shibuya Sky 展望台預約',
-            '成田特快 N\'EX 預約指定席',
-            '飯店 Check-in 線上辦理',
-            '日本上網卡/WiFi機預訂',
-            '旅遊保險投保'
-        ],
-        'packing-list': [
-            '護照 (效期6個月以上)',
-            '台胞證 (備用)',
-            '信用卡 + 現金',
-            '充電器 + 行動電源',
-            '相機 + 記憶卡',
-            '常用藥品',
-            '雨傘/雨衣',
-            '舒適步行鞋',
-            '輕便外套',
-            '盥洗用品'
-        ],
-        'documents': [
-            '機票電子票根列印',
-            '飯店訂房確認單',
-            '旅遊行程表列印',
-            '緊急聯絡人資料',
-            '重要證件影本',
-            '旅遊保險單',
-            '信用卡海外刷卡開通',
-            '手機漫遊/上網設定'
-        ]
-    };
-
-    // DOM 載入完成後初始化
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeApp();
-    });
-
-    // 初始化應用程式
-    function initializeApp() {
-        setupEventListeners();
-        loadItinerary(1);
-        loadBudgetCalculator();
-        loadChecklist();
-        loadNotes();
-    }
-
-    // 設定事件監聽器
-    function setupEventListeners() {
-        // 導航選單切換
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const tabName = this.dataset.tab;
-                switchTab(tabName);
-            });
-        });
-
-        // 日期選擇器
-        document.querySelectorAll('.day-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const day = parseInt(this.dataset.day);
-                loadItinerary(day);
-            });
-        });
-
-        // 路線查詢
-        document.getElementById('search-route').addEventListener('click', searchRoute);
-
-        // 預算計算
-        document.getElementById('people-count').addEventListener('input', calculateBudget);
-        document.querySelectorAll('.expense-input').forEach(input => {
-            input.addEventListener('input', calculateBudget);
-        });
-
-        // 待辦清單
-        document.getElementById('add-item').addEventListener('click', addChecklistItem);
-        document.getElementById('new-item').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addChecklistItem();
-            }
-        });
-
-        // 旅遊筆記
-        document.getElementById('save-note').addEventListener('click', saveNote);
-
-        // 浮動按鈕
-        document.getElementById('share-btn').addEventListener('click', shareItinerary);
-        document.getElementById('offline-btn').addEventListener('click', downloadOffline);
-    }
-
-    // 切換分頁
-    function switchTab(tabName) {
-        // 更新導航按鈕狀態
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-
-        // 更新內容區域
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-        document.getElementById(tabName).classList.add('active');
-    }
-
-    // 載入行程內容
-    function loadItinerary(day) {
-        currentDay = day;
+    <script>
+        // ==================== JavaScript 代碼 ==================== 
         
-        // 更新日期按鈕狀態
-        document.querySelectorAll('.day-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-day="${day}"]`).classList.add('active');
+        // 全域變數
+        const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzjB7WMI9c_Tb1FLX2E3rhgAFhySdS-63dUFdHjKCIhc0LtYtLI9x2WbPpGtpmtkeb5/exec';
+        let currentDay = 1;
+        let budgetData = {};
+        let checklistData = {};
+        let notesData = [];
 
-        // 載入行程內容
-        const dayData = ITINERARY_DATA[day];
-        const contentDiv = document.getElementById('day-content');
-        
-        if (!dayData) {
-            contentDiv.innerHTML = '<p>行程資料載入中...</p>';
-            return;
-        }
-
-        let html = `
-            <div class="day-header">
-                <h2>${dayData.title}</h2>
-                <p class="day-date">${dayData.date}</p>
-            </div>
-        `;
-
-        // 加入每日動線連結
-        if (dayData.mapUrl) {
-            html += `
-                <div class="day-route-link">
-                    <a href="${dayData.mapUrl}" target="_blank" rel="noopener noreferrer">
-                        <i class="fas fa-map-marked-alt"></i>
-                        本日Google地圖景點動線 - 點擊查看完整路線規劃
-                    </a>
-                </div>
-            `;
-        }
-
-        dayData.items.forEach(item => {
-            html += `
-                <div class="itinerary-item">
-                    <h3>
-                        <span class="time">${item.time}</span>
-                        ${item.title}
-                    </h3>
-                    <p>${item.description}</p>
-                    ${item.transport ? `
-                        <div class="transport-info">
-                            <h4><i class="fas fa-route"></i> 交通方式</h4>
-                            <p><strong>方式：</strong>${item.transport.method}</p>
-                            <p><strong>時間：</strong>${item.transport.duration}</p>
-                            <p><strong>費用：</strong>${item.transport.cost}</p>
-                            <p><strong>路線：</strong>${item.transport.route}</p>
-                        </div>
-                    ` : ''}
-                    ${item.food ? `
-                        <div class="food-info">
-                            <strong><i class="fas fa-utensils"></i> 餐飲：</strong>${item.food}
-                        </div>
-                    ` : ''}
-                    ${item.highlight ? `
-                        <div class="highlight-info">
-                            <strong><i class="fas fa-star"></i> 景點亮點：</strong>${item.highlight}
-                        </div>
-                    ` : ''}
-                    ${item.mapUrl ? `
-                        <div class="map-link">
-                            <a href="${item.mapUrl}" target="_blank" rel="noopener noreferrer">
-                                <i class="fas fa-map-marker-alt"></i>
-                                在Google地圖中查看位置
-                            </a>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        });
-
-        contentDiv.innerHTML = html;
-    }
-
-    // 路線查詢功能
-    function searchRoute() {
-        const fromStation = document.getElementById('from-station').value.trim();
-        const toStation = document.getElementById('to-station').value.trim();
-        const resultDiv = document.getElementById('route-result');
-
-        if (!fromStation || !toStation) {
-            showAlert('請輸入出發站和目的地', 'error');
-            return;
-        }
-
-        showLoading(true);
-
-        // 模擬路線查詢
-        setTimeout(() => {
-            const mockResult = {
-                routes: [
+        // 修改後的行程資料 (加入秋葉原和Google地圖連結)
+        const ITINERARY_DATA = {
+            1: {
+                title: "Day 1 - 抵達東京・輕鬆適應",
+                date: "07/20 (日)",
+                mapUrl: "https://www.google.com/maps/dir/成田國際機場/新宿站/歌舞伎町/思出橫丁/@35.6762,139.7649,11z/data=!3m1!4b1!4m26!4m25!1m5!1m1!1s0x6022f0d5a5f0c5f5:0x1a0b0c0d0e0f0g0h!2m2!1d140.3928!2d35.7720!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x60188cd0c0c0c0c2:0x2a3b4c5d6e7f8g9h!2m2!1d139.7044!2d35.6938!1m5!1m1!1s0x60188cd0c0c0c0c3:0x3a4b5c6d7e8f9gah!2m2!1d139.7037!2d35.6944!3e3",
+                items: [
                     {
-                        method: "🚇 JR山手線",
-                        duration: "約15分鐘",
-                        cost: "¥160",
-                        transfers: 0,
-                        route: `${fromStation} → ${toStation}`
+                        time: "10:40",
+                        title: "JX802 起飛",
+                        description: "星宇航空從桃園出發",
+                        transport: null,
+                        food: "機上餐",
+                        highlight: "✈️ 星宇航空新航線，機上服務品質優良，飛行時間約3.5小時，開啟東京之旅",
+                        mapUrl: "https://www.google.com/maps/place/桃園國際機場/@25.0797,121.2342,15z"
                     },
                     {
-                        method: "🚇 東京Metro + JR",
-                        duration: "約20分鐘",
-                        cost: "¥200",
-                        transfers: 1,
-                        route: `${fromStation} → 轉乘站 → ${toStation}`
+                        time: "15:05",
+                        title: "抵達成田機場",
+                        description: "入境提領行李，預計16:00完成",
+                        transport: null,
+                        food: null,
+                        highlight: "🛬 成田國際機場是東京的主要國際門戶，擁有完善的購物和餐飲設施，入境手續相對快速",
+                        mapUrl: "https://www.google.com/maps/place/成田國際機場/@35.7720,140.3928,15z"
+                    },
+                    {
+                        time: "16:15",
+                        title: "前往新宿",
+                        description: "搭乘成田特快前往新宿",
+                        transport: {
+                            method: "🚄 JR Narita Express",
+                            duration: "約80分鐘",
+                            cost: "¥3,070",
+                            route: "成田機場 → 新宿站"
+                        },
+                        food: null,
+                        highlight: "🚄 成田特快是連接機場與市區最舒適的方式，車廂寬敞，可欣賞沿途日本鄉村風光",
+                        mapUrl: "https://www.google.com/maps/dir/成田國際機場/新宿站/@35.7308,139.9967,10z"
+                    },
+                    {
+                        time: "17:45",
+                        title: "GROOVE飯店 Check-in",
+                        description: "抵達新宿，辦理入住手續",
+                        transport: {
+                            method: "🚶‍♂️ 步行",
+                            duration: "約3分鐘",
+                            cost: "免費",
+                            route: "新宿站南口 → GROOVE飯店"
+                        },
+                        food: null,
+                        highlight: "🏨 位於新宿核心地帶的現代化飯店，交通便利，房間雖小但設計精巧，體現日本空間利用智慧",
+                        mapUrl: "https://www.google.com/maps/place/Hotel+Groove+Shinjuku/@35.6896,139.7006,17z"
+                    },
+                    {
+                        time: "18:30",
+                        title: "房間休息",
+                        description: "調整時差，欣賞高樓夜景",
+                        transport: null,
+                        food: null,
+                        highlight: "🌃 新宿高樓林立，夜景璀璨，是調整時差和準備接下來行程的最佳時機",
+                        mapUrl: null
+                    },
+                    {
+                        time: "19:30-22:00",
+                        title: "歌舞伎町散步",
+                        description: "體驗東京夜生活，思出橫丁晚餐",
+                        transport: {
+                            method: "🚶‍♂️ 步行",
+                            duration: "2-8分鐘",
+                            cost: "免費",
+                            route: "飯店周邊步行範圍"
+                        },
+                        food: "思出橫丁「鳥園」",
+                        highlight: "🏮 歌舞伎町是東京最著名的不夜城，霓虹燈閃爍，充滿昭和時代懷舊氛圍的思出橫丁更是體驗老東京文化的絕佳地點",
+                        mapUrl: "https://www.google.com/maps/place/思出橫丁/@35.6944,139.7037,17z"
                     }
                 ]
-            };
+            },
+            2: {
+                title: "Day 2 - 下町文化 + 現代藝術 + 秋葉原動漫",
+                date: "07/21 (一)",
+                mapUrl: "https://www.google.com/maps/dir/新宿站/淺草寺/濱離宮恩賜庭園/築地場外市場/秋葉原電器街/teamLab+Planets+豊洲/@35.6762,139.7649,12z/data=!3m1!4b1!4m38!4m37!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x60188ec0c0c0c0c1:0x1a2b3c4d5e6f7g8i!2m2!1d139.7966!2d35.7148!1m5!1m1!1s0x60188be0c0c0c0c1:0x1a2b3c4d5e6f7g8j!2m2!1d139.7637!2d35.6596!1m5!1m1!1s0x60188be0c0c0c0c2:0x2a3b4c5d6e7f8g9j!2m2!1d139.7707!2d35.6654!1m5!1m1!1s0x60188c0c0c0c0c01:0x3a4b5c6d7e8f9gak!2m2!1d139.7731!2d35.7022!1m5!1m1!1s0x601889f0c0c0c0c1:0x4a5b6c7d8e9fagbl!2m2!1d139.7946!2d35.6490!3e3",
+                items: [
+                    {
+                        time: "07:30",
+                        title: "飯店早餐",
+                        description: "在飯店享用早餐",
+                        transport: null,
+                        food: "飯店早餐",
+                        highlight: "🍱 日式飯店早餐通常包含和洋式選擇，品質精緻，為一天的行程補充能量",
+                        mapUrl: null
+                    },
+                    {
+                        time: "09:00",
+                        title: "前往淺草",
+                        description: "搭乘電車前往淺草寺",
+                        transport: {
+                            method: "🚇 JR+都營淺草線",
+                            duration: "約35分鐘",
+                            cost: "¥200",
+                            route: "新宿 → 新橋 → 淺草"
+                        },
+                        food: null,
+                        highlight: "🚇 體驗東京複雜但高效的電車系統，準時性世界聞名",
+                        mapUrl: "https://www.google.com/maps/dir/新宿站/淺草站/@35.6762,139.7649,12z"
+                    },
+                    {
+                        time: "09:30-11:00",
+                        title: "淺草寺參拜",
+                        description: "雷門拍照，仲見世通購物",
+                        transport: {
+                            method: "🚶‍♂️ 步行",
+                            duration: "出站即達",
+                            cost: "免費",
+                            route: "淺草站 → 雷門 → 淺草寺"
+                        },
+                        food: "人形燒",
+                        highlight: "⛩️ 東京最古老的寺廟之一，雷門的巨大燈籠是東京地標，仲見世通保留了江戶時代的商店街風情，人形燒是必嚐傳統點心",
+                        mapUrl: "https://www.google.com/maps/place/淺草寺/@35.7148,139.7966,17z"
+                    },
+                    {
+                        time: "11:15",
+                        title: "隅田川水上巴士",
+                        description: "搭乘水上巴士前往濱離宮",
+                        transport: {
+                            method: "🚢 水上巴士",
+                            duration: "約35分鐘",
+                            cost: "¥1,040",
+                            route: "淺草碼頭 → 濱離宮碼頭"
+                        },
+                        food: null,
+                        highlight: "🚢 從水上欣賞東京天際線，可看到東京鐵塔、晴空塔等地標，是獨特的城市觀光體驗",
+                        mapUrl: "https://www.google.com/maps/dir/淺草碼頭/濱離宮恩賜庭園/@35.6872,139.7802,13z"
+                    },
+                    {
+                        time: "12:00-13:30",
+                        title: "濱離宮恩賜庭園",
+                        description: "日式庭園散步，欣賞東京灣景色",
+                        transport: {
+                            method: "🚶‍♂️ 碼頭直達",
+                            duration: "即達",
+                            cost: "入園¥300",
+                            route: "碼頭 → 庭園入口"
+                        },
+                        food: null,
+                        highlight: "🌸 江戶時代將軍的離宮庭園，融合傳統日式造景與現代都市景觀，春季櫻花、秋季紅葉都非常美麗",
+                        mapUrl: "https://www.google.com/maps/place/濱離宮恩賜庭園/@35.6596,139.7637,17z"
+                    },
+                    {
+                        time: "14:00-15:30",
+                        title: "築地場外市場",
+                        description: "品嚐新鮮海鮮丼",
+                        transport: {
+                            method: "🚶‍♂️ 步行",
+                            duration: "約10分鐘",
+                            cost: "免費",
+                            route: "濱離宮 → 築地場外"
+                        },
+                        food: "海鮮丼",
+                        highlight: "🐟 雖然築地市場已遷移，但場外市場依然保持傳統，新鮮海產、玉子燒、鮪魚等美食應有盡有，是老饕必訪之地",
+                        mapUrl: "https://www.google.com/maps/place/築地場外市場/@35.6654,139.7707,17z"
+                    },
+                    {
+                        time: "16:00-18:00",
+                        title: "秋葉原電器街 - 動畫模型採購",
+                        description: "動漫聖地巡禮，購買限定模型和周邊商品",
+                        transport: {
+                            method: "🚇 都營大江戶線+JR",
+                            duration: "約20分鐘",
+                            cost: "¥280",
+                            route: "築地市場 → 新橋 → 秋葉原"
+                        },
+                        food: "女僕咖啡廳",
+                        highlight: "🤖 世界知名的電器和動漫文化中心，從最新的電子產品到稀有的動畫模型應有盡有，女僕咖啡廳是獨特的日本次文化體驗",
+                        mapUrl: "https://www.google.com/maps/place/秋葉原電器街/@35.7022,139.7731,17z"
+                    },
+                    {
+                        time: "18:30-20:30",
+                        title: "teamLab Planets 豊洲",
+                        description: "沉浸式數位藝術體驗",
+                        transport: {
+                            method: "🚇 JR+百合海鷗線",
+                            duration: "約25分鐘",
+                            cost: "¥320",
+                            route: "秋葉原 → 新橋 → 豊洲"
+                        },
+                        food: null,
+                        highlight: "🎨 世界知名的數位藝術團隊作品，結合科技與藝術，創造出夢幻的沉浸式體驗，需赤腳體驗，與藝術品互動",
+                        mapUrl: "https://www.google.com/maps/place/teamLab+Planets+TOKYO/@35.6490,139.7946,17z"
+                    },
+                    {
+                        time: "21:30",
+                        title: "回新宿晚餐",
+                        description: "回到新宿享用拉麵",
+                        transport: {
+                            method: "🚇 百合海鷗線+JR",
+                            duration: "約35分鐘",
+                            cost: "¥320",
+                            route: "豊洲 → 新橋 → 新宿"
+                        },
+                        food: "一蘭拉麵",
+                        highlight: "🍜 一蘭拉麵的「一人一格」用餐方式是獨特的日本文化體驗，可專心品嚐拉麵的美味",
+                        mapUrl: "https://www.google.com/maps/place/一蘭拉麵+新宿店/@35.6896,139.7006,17z"
+                    }
+                ]
+            },
+            3: {
+                title: "Day 3 - 原宿澀谷潮流 + 轉住Gracery",
+                date: "07/22 (二)",
+                mapUrl: "https://www.google.com/maps/dir/新宿站/明治神宮/竹下通/表參道Hills/澀谷109/Soccer+Shop+KAMO+澀谷店/Shibuya+Sky/@35.6762,139.7649,13z/data=!3m1!4b1!4m44!4m43!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x60188ca0c0c0c0c1:0x1a2b3c4d5e6f7g8k!2m2!1d139.6993!2d35.6764!1m5!1m1!1s0x60188ca0c0c0c0c2:0x2a3b4c5d6e7f8g9k!2m2!1d139.7028!2d35.6702!1m5!1m1!1s0x60188ca0c0c0c0c3:0x3a4b5c6d7e8f9gak!2m2!1d139.7117!2d35.6657!1m5!1m1!1s0x60188ca0c0c0c0c4:0x4a5b6c7d8e9fagbl!2m2!1d139.7010!2d35.6598!1m5!1m1!1s0x60188ca0c0c0c0c5:0x5a6b7c8d9eafbgcm!2m2!1d139.7016!2d35.6580!1m5!1m1!1s0x60188ca0c0c0c0c6:0x6a7b8c9daeafbgcdn!2m2!1d139.7016!2d35.6590!3e3",
+                items: [
+                    {
+                        time: "07:30",
+                        title: "GROOVE 退房",
+                        description: "退房後步行至 Gracery 寄行李",
+                        transport: {
+                            method: "🚶‍♂️ 步行/計程車",
+                            duration: "約8分鐘",
+                            cost: "步行免費/計程車¥730",
+                            route: "GROOVE → Gracery"
+                        },
+                        food: "便利店早餐",
+                        highlight: "🏪 日本便利店早餐選擇豐富，飯糰、三明治、咖啡品質都很高，是快速解決早餐的好選擇",
+                        mapUrl: "https://www.google.com/maps/dir/Hotel+Groove+Shinjuku/Hotel+Gracery+Shinjuku/@35.6896,139.7006,17z"
+                    },
+                    {
+                        time: "08:00",
+                        title: "前往原宿",
+                        description: "搭乘山手線前往原宿站",
+                        transport: {
+                            method: "🚇 JR山手線",
+                            duration: "約7分鐘",
+                            cost: "¥160",
+                            route: "新宿 → 原宿"
+                        },
+                        food: null,
+                        highlight: "🚇 山手線是東京最重要的環狀線，連接所有主要區域",
+                        mapUrl: "https://www.google.com/maps/dir/新宿站/原宿站/@35.6829,139.7000,14z"
+                    },
+                    {
+                        time: "08:30-10:00",
+                        title: "明治神宮參拜",
+                        description: "東京最重要的神社參拜",
+                        transport: {
+                            method: "🚶‍♂️ 步行",
+                            duration: "約3分鐘",
+                            cost: "免費",
+                            route: "原宿站西口 → 明治神宮"
+                        },
+                        food: null,
+                        highlight: "⛩️ 供奉明治天皇的神社，擁有東京市區最大的森林，清晨參拜可感受寧靜神聖的氛圍，是東京的精神象徵",
+                        mapUrl: "https://www.google.com/maps/place/明治神宮/@35.6764,139.6993,17z"
+                    },
+                    {
+                        time: "10:15-11:30",
+                        title: "竹下通逛街",
+                        description: "青少年文化聖地購物",
+                        transport: {
+                            method: "🚶‍♂️ 步行",
+                            duration: "約3分鐘",
+                            cost: "免費",
+                            route: "明治神宮 → 竹下通"
+                        },
+                        food: "彩虹棉花糖",
+                        highlight: "🌈 日本流行文化的發源地，可愛文化、原宿風格的集中地，彩虹棉花糖等創意美食是Instagram熱門打卡點",
+                        mapUrl: "https://www.google.com/maps/place/竹下通/@35.6702,139.7028,17z"
+                    },
+                    {
+                        time: "11:45-14:00",
+                        title: "表參道精品街",
+                        description: "高級精品購物 + 午餐",
+                        transport: {
+                            method: "🚶‍♂️ 步行",
+                            duration: "約10分鐘",
+                            cost: "免費",
+                            route: "竹下通 → 表參道Hills"
+                        },
+                        food: "牛かつもと村",
+                        highlight: "🏬 東京的香榭麗舍大道，匯集國際精品旗艦店，建築設計也是一大看點，牛かつもと村的炸牛排是必嚐美食",
+                        mapUrl: "https://www.google.com/maps/place/表參道Hills/@35.6657,139.7117,17z"
+                    },
+                    {
+                        time: "14:30-15:30",
+                        title: "澀谷購物 - 109",
+                        description: "澀谷109購物中心，日本流行時尚聖地",
+                        transport: {
+                            method: "🚇 東京Metro半藏門線",
+                            duration: "約3分鐘",
+                            cost: "¥170",
+                            route: "表參道 → 澀谷"
+                        },
+                        food: null,
+                        highlight: "🛍️ 日本最具代表性的流行時尚購物中心，匯集最新潮流品牌，是體驗日本年輕人文化的最佳地點",
+                        mapUrl: "https://www.google.com/maps/place/澀谷109/@35.6598,139.7010,17z"
+                    },
+                    {
+                        time: "15:45-17:15",
+                        title: "Soccer Shop KAMO 澀谷店",
+                        description: "日本知名足球用品專賣店，各種足球相關商品應有盡有",
+                        transport: {
+                            method: "🚶‍♂️ 步行",
+                            duration: "約5分鐘",
+                            cost: "免費",
+                            route: "澀谷109 → Soccer Shop KAMO"
+                        },
+                        food: null,
+                        highlight: "⚽ 日本最大的足球專門店之一，擁有豐富的日本國家隊、J聯盟球衣收藏，還有限定版球鞋和稀有足球用品，足球迷的天堂",
+                        mapUrl: "https://www.google.com/maps/place/Soccer+Shop+KAMO+澀谷店/@35.6580,139.7016,17z"
+                    },
+                    {
+                        time: "17:30-18:30",
+                        title: "Shibuya Sky 夕陽",
+                        description: "澀谷天空展望台看夕陽",
+                        transport: {
+                            method: "🚶‍♂️ 步行",
+                            duration: "約3分鐘",
+                            cost: "入場¥2,000",
+                            route: "Soccer Shop → Sky展望台"
+                        },
+                        food: null,
+                        highlight: "🌅 東京最新的天空觀景台，360度俯瞰東京全景，夕陽時分是最佳拍照時機，可將富士山、東京鐵塔盡收眼底",
+                        mapUrl: "https://www.google.com/maps/place/Shibuya+Sky/@35.6590,139.7016,17z"
+                    },
+                    {
+                        time: "18:45",
+                        title: "澀谷十字路口",
+                        description: "世界最繁忙十字路口拍照",
+                        transport: {
+                            method: "🚶‍♂️ 下樓即達",
+                            duration: "即達",
+                            cost: "免費",
+                            route: "Sky → 十字路口"
+                        },
+                        food: null,
+                        highlight: "🚦 世界最繁忙的十字路口，每次綠燈可有3000人同時通過，是東京現代都市生活的象徵，夜晚霓虹燈效果更佳",
+                        mapUrl: "https://www.google.com/maps/place/澀谷十字路口/@35.6598,139.7010,17z"
+                    },
+                    {
+                        time: "19:30",
+                        title: "回新宿 Check-in",
+                        description: "回到新宿 Gracery 辦理入住",
+                        transport: {
+                            method: "🚇 JR山手線",
+                            duration: "約7分鐘",
+                            cost: "¥160",
+                            route: "澀谷 → 新宿"
+                        },
+                        food: "鳥貴族串燒",
+                                               highlight: "🏨 Gracery飯店以哥吉拉為主題，頂樓有巨大哥吉拉頭像，是獨特的住宿體驗；鳥貴族是平價串燒連鎖店",
+                        mapUrl: "https://www.google.com/maps/place/Hotel+Gracery+Shinjuku/@35.6896,139.7006,17z"
+                    }
+                ]
+            },
+            4: {
+                title: "Day 4 - Tokyo Disneyland 攻略日",
+                date: "07/23 (三)",
+                mapUrl: "https://www.google.com/maps/dir/新宿站/舞濱站/東京迪士尼樂園/@35.6762,139.7649,11z/data=!3m1!4b1!4m20!4m19!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x601885c0c0c0c0c1:0x1a2b3c4d5e6f7g8o!2m2!1d139.8836!2d35.6347!1m5!1m1!1s0x601885d0c0c0c0c1:0x2a3b4c5d6e7f8g9o!2m2!1d139.8781!2d35.6329!3e3",
+                items: [
+                    {
+                        time: "06:30",
+                        title: "早餐 + 出發",
+                        description: "Gracery早餐後準備出發",
+                        transport: null,
+                        food: "飯店早餐",
+                        highlight: "🏰 迪士尼攻略日需要充足體力，早起是為了避開人潮，把握黃金遊玩時間",
+                        mapUrl: null
+                    },
+                    {
+                        time: "07:06",
+                        title: "前往迪士尼",
+                        description: "搭乘JR前往舞濱站",
+                        transport: {
+                            method: "🚇 JR中央線+京葉線",
+                            duration: "約45分鐘",
+                            cost: "¥390",
+                            route: "新宿 → 東京 → 舞濱"
+                        },
+                        food: null,
+                        highlight: "🚄 京葉線是前往迪士尼的專用線路，車窗可看到東京灣景色",
+                        mapUrl: "https://www.google.com/maps/dir/新宿站/舞濱站/@35.6622,139.7921,11z"
+                    },
+                    {
+                        time: "08:00",
+                        title: "抵達迪士尼樂園",
+                        description: "開園前排隊入場",
+                        transport: {
+                            method: "🚶‍♂️ 步行/度假區線",
+                            duration: "約5分鐘",
+                            cost: "步行免費/¥260",
+                            route: "舞濱站 → 迪士尼樂園"
+                        },
+                        food: null,
+                        highlight: "🎢 東京迪士尼樂園是亞洲第一座迪士尼樂園，保持著最高的服務品質和獨特的日式細膩",
+                        mapUrl: "https://www.google.com/maps/place/東京迪士尼樂園/@35.6329,139.8781,17z"
+                    },
+                    {
+                        time: "08:15-12:00",
+                        title: "上午高效攻略",
+                        description: "從右側開始順時針遊玩熱門設施",
+                        transport: {
+                            method: "🎢 園區內步行",
+                            duration: "善用App查詢",
+                            cost: "入園¥10,900",
+                            route: "右側→順時針路線"
+                        },
+                        food: null,
+                        highlight: "🎯 建議先玩太空山、巨雷山等熱門設施，使用迪士尼App可查看等候時間，提高遊玩效率",
+                        mapUrl: null
+                    },
+                    {
+                        time: "12:00-13:00",
+                        title: "Queen of Hearts 午餐",
+                        description: "愛麗絲主題餐廳用餐",
+                        transport: {
+                            method: "🚶‍♂️ 園區內步行",
+                            duration: "位於夢幻樂園",
+                            cost: "餐費約¥2,500",
+                            route: "園區內移動"
+                        },
+                        food: "主題餐廳套餐",
+                        highlight: "🫖 愛麗絲夢遊仙境主題餐廳，餐具和裝潢都充滿童話色彩，是迪士尼獨有的用餐體驗",
+                        mapUrl: null
+                    },
+                    {
+                        time: "13:00-17:30",
+                        title: "下午遊玩",
+                        description: "室內設施避暑，購物休息",
+                        transport: {
+                            method: "🎢 園區內移動",
+                            duration: "多利用室內設施",
+                            cost: "商品費用",
+                            route: "園區內各區域"
+                        },
+                        food: "米奇雞腿",
+                        highlight: "🍗 米奇造型雞腿是迪士尼經典美食，下午可在室內設施如小小世界、鬼屋等避暑",
+                        mapUrl: null
+                    },
+                    {
+                        time: "18:45",
+                        title: "卡位等夜間遊行",
+                        description: "在城堡前廣場卡位",
+                        transport: {
+                            method: "🚶‍♂️ 遊行路線卡位",
+                            duration: "提前45分鐘",
+                            cost: "免費",
+                            route: "城堡前廣場"
+                        },
+                        food: null,
+                        highlight: "✨ 夜間遊行是迪士尼的重頭戲，燈光效果絢爛，建議提前卡位取得最佳觀賞位置",
+                        mapUrl: null
+                    },
+                    {
+                        time: "19:30-20:00",
+                        title: "Electrical Parade",
+                        description: "東京迪士尼經典夜間遊行",
+                        transport: null,
+                        food: null,
+                        highlight: "🎆 東京迪士尼電子大遊行是世界知名的夜間表演，結合音樂、燈光、花車，帶來夢幻體驗",
+                        mapUrl: null
+                    },
+                    {
+                        time: "21:30",
+                        title: "回新宿",
+                        description: "搭乘JR回到新宿",
+                        transport: {
+                            method: "🚇 JR京葉線+中央線",
+                            duration: "約45分鐘",
+                            cost: "¥390",
+                            route: "舞濱 → 東京 → 新宿"
+                        },
+                        food: "山頭火拉麵",
+                        highlight: "🍜 山頭火拉麵以白湯豚骨拉麵聞名，是結束迪士尼一日遊的完美句號",
+                        mapUrl: "https://www.google.com/maps/place/山頭火拉麵+新宿店/@35.6896,139.7006,17z"
+                    }
+                ]
+            },
+            5: {
+                title: "Day 5 - 採買返台",
+                date: "07/24 (四)",
+                mapUrl: "https://www.google.com/maps/dir/新宿站/BICQLO/Loft+新宿店/Don+Quijote+新宿東南口店/成田國際機場/@35.6762,139.7649,10z/data=!3m1!4b1!4m32!4m31!1m5!1m1!1s0x60188ce0c0c0c0c1:0x1a2b3c4d5e6f7g8h!2m2!1d139.7006!2d35.6896!1m5!1m1!1s0x60188ce0c0c0c0c2:0x2a3b4c5d6e7f8g9h!2m2!1d139.7010!2d35.6900!1m5!1m1!1s0x60188ce0c0c0c0c3:0x3a4b5c6d7e8f9gah!2m2!1d139.7020!2d35.6890!1m5!1m1!1s0x60188ce0c0c0c0c4:0x4a5b6c7d8e9fagbh!2m2!1d139.7030!2d35.6880!1m5!1m1!1s0x6022f0d5a5f0c5f5:0x1a0b0c0d0e0f0g0h!2m2!1d140.3928!2d35.7720!3e3",
+                items: [
+                    {
+                        time: "07:30",
+                        title: "早餐 + 退房",
+                        description: "Gracery早餐後退房寄行李",
+                        transport: null,
+                        food: "飯店早餐",
+                        highlight: "🧳 最後一天的行李整理很重要，善用飯店寄放服務，輕鬆購物",
+                        mapUrl: null
+                    },
+                    {
+                        time: "09:00-11:00",
+                        title: "最後採買",
+                        description: "新宿站周邊最後購物",
+                        transport: {
+                            method: "🚶‍♂️ 新宿站周邊步行",
+                            duration: "全部徒步可達",
+                            cost: "免費",
+                            route: "BICQLO→Loft→Don Quijote"
+                        },
+                        food: "哈根達斯",
+                        highlight: "🛒 新宿是購物天堂，BICQLO結合優衣庫和BIC Camera、Loft有創意商品、Don Quijote是24小時驚安殿堂",
+                        mapUrl: "https://www.google.com/maps/place/BICQLO+新宿東口店/@35.6900,139.7010,17z"
+                    },
+                    {
+                        time: "11:20",
+                        title: "前往成田機場",
+                        description: "搭乘成田特快前往機場",
+                        transport: {
+                            method: "🚄 JR Narita Express",
+                            duration: "約80分鐘",
+                            cost: "使用來回券",
+                            route: "新宿 → 成田機場T2"
+                        },
+                        food: "N'EX便當",
+                        highlight: "🚄 成田特快的便當品質很高，可在車上享用最後的日式美食",
+                        mapUrl: "https://www.google.com/maps/dir/新宿站/成田國際機場/@35.7308,139.9967,10z"
+                    },
+                    {
+                        time: "13:30",
+                        title: "機場報到 + 退稅",
+                        description: "星宇櫃檯報到，4F退稅",
+                        transport: {
+                            method: "🚶‍♂️ 成田T2內移動",
+                            duration: "預留充足時間",
+                            cost: "免費",
+                            route: "D/E區櫃檯→退稅櫃檯"
+                        },
+                        food: null,
+                        highlight: "💰 日本退稅手續相對簡單，記得攜帶護照和購物收據，可退8%消費稅",
+                        mapUrl: "https://www.google.com/maps/place/成田國際機場+第2航廈/@35.7720,140.3928,17z"
+                    },
+                    {
+                        time: "14:30-16:00",
+                        title: "免稅店採購",
+                        description: "最後伴手禮採購",
+                        transport: {
+                            method: "🚶‍♂️ 免稅店區域",
+                            duration: "預留充足時間",
+                            cost: "商品費用",
+                            route: "成田機場免稅店"
+                        },
+                        food: null,
+                        highlight: "🎁 成田機場免稅店商品齊全，從日本酒、零食到化妝品應有盡有，是最後購買伴手禮的好機會",
+                        mapUrl: null
+                    },
+                    {
+                        time: "16:20",
+                        title: "JX803起飛",
+                        description: "星宇航空返回桃園",
+                        transport: null,
+                        food: "機上餐",
+                        highlight: "✈️ 帶著滿滿的回憶和戰利品返回台灣，結束精彩的東京五日遊",
+                        mapUrl: null
+                    },
+                    {
+                        time: "19:00",
+                        title: "抵達桃園",
+                        description: "順利返回台灣",
+                        transport: {
+                            method: "🚄 機捷+高鐵",
+                            duration: "可當天回台中",
+                            cost: "依個人需求",
+                            route: "桃園→台北→台中"
+                        },
+                        food: null,
+                        highlight: "🏠 回到溫暖的家，開始整理照片和回憶，計劃下次的日本之旅",
+                        mapUrl: "https://www.google.com/maps/place/桃園國際機場/@25.0797,121.2342,15z"
+                    }
+                ]
+            }
+        };
 
-            let html = '<h3>查詢結果</h3>';
-            mockResult.routes.forEach((route, index) => {
+        // 預設待辦清單資料
+        const DEFAULT_CHECKLIST = {
+            'online-booking': [
+                '迪士尼樂園門票預購',
+                'teamLab Planets 預約',
+                'Shibuya Sky 展望台預約',
+                '成田特快 N\'EX 預約指定席',
+                '飯店 Check-in 線上辦理',
+                '日本上網卡/WiFi機預訂',
+                '旅遊保險投保'
+            ],
+            'packing-list': [
+                '護照 (效期6個月以上)',
+                '台胞證 (備用)',
+                '信用卡 + 現金',
+                '充電器 + 行動電源',
+                '相機 + 記憶卡',
+                '常用藥品',
+                '雨傘/雨衣',
+                '舒適步行鞋',
+                '輕便外套',
+                '盥洗用品'
+            ],
+            'documents': [
+                '機票電子票根列印',
+                '飯店訂房確認單',
+                '旅遊行程表列印',
+                '緊急聯絡人資料',
+                '重要證件影本',
+                '旅遊保險單',
+                '信用卡海外刷卡開通',
+                '手機漫遊/上網設定'
+            ]
+        };
+
+        // DOM 載入完成後初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        // 初始化應用程式
+        function initializeApp() {
+            setupEventListeners();
+            loadItinerary(1);
+            loadBudgetCalculator();
+            loadChecklist();
+            loadNotes();
+        }
+
+        // 設定事件監聽器
+        function setupEventListeners() {
+            // 導航選單切換
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabName = this.dataset.tab;
+                    switchTab(tabName);
+                });
+            });
+
+            // 日期選擇器
+            document.querySelectorAll('.day-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const day = parseInt(this.dataset.day);
+                    loadItinerary(day);
+                });
+            });
+
+            // 路線查詢
+            document.getElementById('search-route').addEventListener('click', searchRoute);
+
+            // 預算計算
+            document.getElementById('people-count').addEventListener('input', calculateBudget);
+            document.querySelectorAll('.expense-input').forEach(input => {
+                input.addEventListener('input', calculateBudget);
+            });
+
+            // 待辦清單
+            document.getElementById('add-item').addEventListener('click', addChecklistItem);
+            document.getElementById('new-item').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addChecklistItem();
+                }
+            });
+
+            // 旅遊筆記
+            document.getElementById('save-note').addEventListener('click', saveNote);
+
+            // 浮動按鈕
+            document.getElementById('share-btn').addEventListener('click', shareItinerary);
+            document.getElementById('offline-btn').addEventListener('click', downloadOffline);
+        }
+
+        // 切換分頁
+        function switchTab(tabName) {
+            // 更新導航按鈕狀態
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            // 更新內容區域
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // 載入行程內容 (修改版，加入Google地圖連結)
+        function loadItinerary(day) {
+            currentDay = day;
+            
+            // 更新日期按鈕狀態
+            document.querySelectorAll('.day-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-day="${day}"]`).classList.add('active');
+
+            // 載入行程內容
+            const dayData = ITINERARY_DATA[day];
+            const contentDiv = document.getElementById('day-content');
+            
+            if (!dayData) {
+                contentDiv.innerHTML = '<p>行程資料載入中...</p>';
+                return;
+            }
+
+            let html = `
+                <div class="day-header">
+                    <h2>${dayData.title}</h2>
+                    <p class="day-date">${dayData.date}</p>
+                </div>
+            `;
+
+            // 加入每日動線連結
+            if (dayData.mapUrl) {
                 html += `
-                    <div class="route-option" style="background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 3px solid #007bff;">
-                        <h4>路線 ${index + 1}</h4>
-                        <p><strong>方式：</strong>${route.method}</p>
-                        <p><strong>時間：</strong>${route.duration}</p>
-                        <p><strong>費用：</strong>${route.cost}</p>
-                        <p><strong>轉乘：</strong>${route.transfers}次</p>
-                        <p><strong>路線：</strong>${route.route}</p>
+                    <div class="day-route-link">
+                        <a href="${dayData.mapUrl}" target="_blank" rel="noopener noreferrer">
+                            <i class="fas fa-map-marked-alt"></i>
+                            本日Google地圖景點動線 - 點擊查看完整路線規劃
+                        </a>
+                    </div>
+                `;
+            }
+
+            dayData.items.forEach(item => {
+                html += `
+                    <div class="itinerary-item">
+                        <h3>
+                            <span class="time">${item.time}</span>
+                            ${item.title}
+                        </h3>
+                        <p>${item.description}</p>
+                        ${item.transport ? `
+                            <div class="transport-info">
+                                <h4><i class="fas fa-route"></i> 交通方式</h4>
+                                <p><strong>方式：</strong>${item.transport.method}</p>
+                                <p><strong>時間：</strong>${item.transport.duration}</p>
+                                <p><strong>費用：</strong>${item.transport.cost}</p>
+                                <p><strong>路線：</strong>${item.transport.route}</p>
+                            </div>
+                        ` : ''}
+                        ${item.food ? `
+                            <div class="food-info">
+                                <strong><i class="fas fa-utensils"></i> 餐飲：</strong>${item.food}
+                            </div>
+                        ` : ''}
+                        ${item.highlight ? `
+                            <div class="highlight-info">
+                                <strong><i class="fas fa-star"></i> 景點亮點：</strong>${item.highlight}
+                            </div>
+                        ` : ''}
+                        ${item.mapUrl ? `
+                            <div class="map-link">
+                                <a href="${item.mapUrl}" target="_blank" rel="noopener noreferrer">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    在Google地圖中查看位置
+                                </a>
+                            </div>
+                        ` : ''}
                     </div>
                 `;
             });
 
-            resultDiv.innerHTML = html;
-            resultDiv.classList.remove('hidden');
-            showLoading(false);
-        }, 1500);
-    }
-
-    // 載入預算計算器
-    function loadBudgetCalculator() {
-        calculateBudget();
-    }
-
-    // 計算預算
-    function calculateBudget() {
-        const peopleCount = parseInt(document.getElementById('people-count').value) || 1;
-        let totalAmount = 0;
-
-        document.querySelectorAll('.expense-input').forEach(input => {
-            const amount = parseInt(input.value) || 0;
-            totalAmount += amount;
-        });
-
-        const perPersonAmount = Math.round(totalAmount / peopleCount);
-
-        document.getElementById('total-amount').textContent = `¥${totalAmount.toLocaleString()}`;
-        document.getElementById('per-person-amount').textContent = `¥${perPersonAmount.toLocaleString()}`;
-    }
-
-    // 載入待辦清單
-    function loadChecklist() {
-        const savedChecklist = localStorage.getItem('tokyo-checklist');
-        checklistData = savedChecklist ? JSON.parse(savedChecklist) : DEFAULT_CHECKLIST;
-
-        Object.keys(checklistData).forEach(category => {
-            renderChecklistCategory(category);
-        });
-    }
-
-    // 渲染待辦清單分類
-    function renderChecklistCategory(category) {
-        const container = document.getElementById(category);
-        if (!container) return;
-
-        let html = '';
-        checklistData[category].forEach((item, index) => {
-            const isCompleted = item.completed || false;
-            const itemText = typeof item === 'string' ? item : item.text;
-            
-            html += `
-                <div class="checklist-item ${isCompleted ? 'completed' : ''}">
-                    <input type="checkbox" ${isCompleted ? 'checked' : ''} 
-                           onchange="toggleChecklistItem('${category}', ${index})">
-                    <span>${itemText}</span>
-                    <button class="delete-btn" onclick="deleteChecklistItem('${category}', ${index})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-        });
-
-        container.innerHTML = html;
-    }
-
-    // 新增待辦事項
-    function addChecklistItem() {
-        const newItemInput = document.getElementById('new-item');
-        const categorySelect = document.getElementById('item-category');
-        const itemText = newItemInput.value.trim();
-        const category = categorySelect.value;
-
-        if (!itemText) {
-            showAlert('請輸入待辦事項內容', 'error');
-            return;
+            contentDiv.innerHTML = html;
         }
 
-        if (!checklistData[category]) {
-            checklistData[category] = [];
+        // 路線查詢功能
+        function searchRoute() {
+            const fromStation = document.getElementById('from-station').value.trim();
+            const toStation = document.getElementById('to-station').value.trim();
+            const resultDiv = document.getElementById('route-result');
+
+            if (!fromStation || !toStation) {
+                showAlert('請輸入出發站和目的地', 'error');
+                return;
+            }
+
+            showLoading(true);
+
+            // 模擬路線查詢 (實際應該呼叫 Google Apps Script API)
+            setTimeout(() => {
+                const mockResult = {
+                    routes: [
+                        {
+                            method: "🚇 JR山手線",
+                            duration: "約15分鐘",
+                            cost: "¥160",
+                            transfers: 0,
+                            route: `${fromStation} → ${toStation}`
+                        },
+                        {
+                            method: "🚇 東京Metro + JR",
+                            duration: "約20分鐘",
+                            cost: "¥200",
+                            transfers: 1,
+                            route: `${fromStation} → 轉乘站 → ${toStation}`
+                        }
+                    ]
+                };
+
+                let html = '<h3>查詢結果</h3>';
+                mockResult.routes.forEach((route, index) => {
+                    html += `
+                        <div class="route-option" style="background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 3px solid #007bff;">
+                            <h4>路線 ${index + 1}</h4>
+                            <p><strong>方式：</strong>${route.method}</p>
+                            <p><strong>時間：</strong>${route.duration}</p>
+                            <p><strong>費用：</strong>${route.cost}</p>
+                            <p><strong>轉乘：</strong>${route.transfers}次</p>
+                            <p><strong>路線：</strong>${route.route}</p>
+                        </div>
+                    `;
+                });
+
+                resultDiv.innerHTML = html;
+                resultDiv.classList.remove('hidden');
+                showLoading(false);
+            }, 1500);
         }
 
-        checklistData[category].push({
-            text: itemText,
-            completed: false
-        });
-
-        localStorage.setItem('tokyo-checklist', JSON.stringify(checklistData));
-        renderChecklistCategory(category);
-        newItemInput.value = '';
-        
-        showAlert('待辦事項已新增', 'success');
-    }
-
-    // 切換待辦事項完成狀態
-    function toggleChecklistItem(category, index) {
-        if (typeof checklistData[category][index] === 'string') {
-            checklistData[category][index] = {
-                text: checklistData[category][index],
-                completed: false
-            };
+        // 載入預算計算器
+        function loadBudgetCalculator() {
+            calculateBudget();
         }
 
-        checklistData[category][index].completed = !checklistData[category][index].completed;
-        localStorage.setItem('tokyo-checklist', JSON.stringify(checklistData));
-        renderChecklistCategory(category);
-    }
+        // 計算預算
+        function calculateBudget() {
+            const peopleCount = parseInt(document.getElementById('people-count').value) || 1;
+            let totalAmount = 0;
 
-    // 刪除待辦事項
-    function deleteChecklistItem(category, index) {
-        if (confirm('確定要刪除這個待辦事項嗎？')) {
-            checklistData[category].splice(index, 1);
-            localStorage.setItem('tokyo-checklist', JSON.stringify(checklistData));
-            renderChecklistCategory(category);
-            showAlert('待辦事項已刪除', 'success');
-}
-}
-        // 載入旅遊筆記
-    function loadNotes() {
-        const savedNotes = localStorage.getItem('tokyo-notes');
-        notesData = savedNotes ? JSON.parse(savedNotes) : [];
-        renderNotes();
-    }
+            document.querySelectorAll('.expense-input').forEach(input => {
+                const amount = parseInt(input.value) || 0;
+                totalAmount += amount;
+            });
 
-    // 渲染筆記列表
-    function renderNotes() {
-        const notesContainer = document.getElementById('notes-list');
-        
-        if (notesData.length === 0) {
-            notesContainer.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 20px;">尚無旅遊筆記，開始記錄你的東京之旅吧！</p>';
-            return;
+            const perPersonAmount = Math.round(totalAmount / peopleCount);
+
+            document.getElementById('total-amount').textContent = `¥${totalAmount.toLocaleString()}`;
+            document.getElementById('per-person-amount').textContent = `¥${perPersonAmount.toLocaleString()}`;
         }
 
-        let html = '';
-        notesData.forEach((note, index) => {
-            html += `
-                <div class="note-item">
-                    <h4>${note.title}</h4>
-                    <div class="note-date">
-                        <i class="fas fa-calendar"></i> ${note.date}
-                    </div>
-                    <div class="note-content">${note.content.replace(/\n/g, '<br>')}</div>
-                    <div class="note-actions">
-                        <button class="delete-note-btn" onclick="deleteNote(${index})">
-                            <i class="fas fa-trash"></i> 刪除
+        // 載入待辦清單
+        function loadChecklist() {
+            // 從 localStorage 載入或使用預設資料
+            const savedChecklist = localStorage.getItem('tokyo-checklist');
+            checklistData = savedChecklist ? JSON.parse(savedChecklist) : DEFAULT_CHECKLIST;
+
+            Object.keys(checklistData).forEach(category => {
+                renderChecklistCategory(category);
+            });
+        }
+
+        // 渲染待辦清單分類
+        function renderChecklistCategory(category) {
+            const container = document.getElementById(category);
+            if (!container) return;
+
+            let html = '';
+            checklistData[category].forEach((item, index) => {
+                const isCompleted = item.completed || false;
+                const itemText = typeof item === 'string' ? item : item.text;
+                
+                html += `
+                    <div class="checklist-item ${isCompleted ? 'completed' : ''}">
+                        <input type="checkbox" ${isCompleted ? 'checked' : ''} 
+                               onchange="toggleChecklistItem('${category}', ${index})">
+                        <span>${itemText}</span>
+                        <button class="delete-btn" onclick="deleteChecklistItem('${category}', ${index})">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </div>
-                </div>
-            `;
-        });
+                `;
+            });
 
-        notesContainer.innerHTML = html;
-    }
-
-    // 儲存筆記
-    function saveNote() {
-        const titleInput = document.getElementById('note-title');
-        const contentInput = document.getElementById('note-content');
-        
-        const title = titleInput.value.trim();
-        const content = contentInput.value.trim();
-
-        if (!title || !content) {
-            showAlert('請輸入筆記標題和內容', 'error');
-            return;
+            container.innerHTML = html;
         }
 
-        const newNote = {
-            title: title,
-            content: content,
-            date: new Date().toLocaleString('zh-TW'),
-            id: Date.now()
-        };
+        // 新增待辦事項
+        function addChecklistItem() {
+            const newItemInput = document.getElementById('new-item');
+            const categorySelect = document.getElementById('item-category');
+            const itemText = newItemInput.value.trim();
+            const category = categorySelect.value;
 
-        notesData.unshift(newNote);
-        localStorage.setItem('tokyo-notes', JSON.stringify(notesData));
+            if (!itemText) {
+                showAlert('請輸入待辦事項內容', 'error');
+                return;
+            }
 
-        titleInput.value = '';
-        contentInput.value = '';
-        renderNotes();
+            if (!checklistData[category]) {
+                checklistData[category] = [];
+            }
 
-        showAlert('筆記已儲存', 'success');
-    }
+            checklistData[category].push({
+                text: itemText,
+                completed: false
+            });
 
-    // 刪除筆記
-    function deleteNote(index) {
-        if (confirm('確定要刪除這則筆記嗎？')) {
-            notesData.splice(index, 1);
-            localStorage.setItem('tokyo-notes', JSON.stringify(notesData));
+            // 儲存到 localStorage
+            localStorage.setItem('tokyo-checklist', JSON.stringify(checklistData));
+
+            // 重新渲染該分類
+            renderChecklistCategory(category);
+
+            // 清空輸入框
+            newItemInput.value = '';
+            
+            showAlert('待辦事項已新增', 'success');
+        }
+
+        // 切換待辦事項完成狀態
+        function toggleChecklistItem(category, index) {
+            if (typeof checklistData[category][index] === 'string') {
+                // 轉換舊格式為新格式
+                checklistData[category][index] = {
+                    text: checklistData[category][index],
+                    completed: false
+                };
+            }
+
+            checklistData[category][index].completed = !checklistData[category][index].completed;
+            
+            // 儲存到 localStorage
+            localStorage.setItem('tokyo-checklist', JSON.stringify(checklistData));
+
+            // 重新渲染該分類
+            renderChecklistCategory(category);
+        }
+
+        // 刪除待辦事項
+        function deleteChecklistItem(category, index) {
+            if (confirm('確定要刪除這個待辦事項嗎？')) {
+                checklistData[category].splice(index, 1);
+                
+                // 儲存到 localStorage
+                localStorage.setItem('tokyo-checklist', JSON.stringify(checklistData));
+
+                // 重新渲染該分類
+                renderChecklistCategory(category);
+                
+                showAlert('待辦事項已刪除', 'success');
+            }
+        }
+
+        // 載入旅遊筆記
+        function loadNotes() {
+            // 從 localStorage 載入筆記
+            const savedNotes = localStorage.getItem('tokyo-notes');
+            notesData = savedNotes ? JSON.parse(savedNotes) : [];
+
             renderNotes();
-            showAlert('筆記已刪除', 'success');
         }
-    }
 
-    // 分享行程功能
-    function shareItinerary() {
-        if (navigator.share) {
-            navigator.share({
-                title: '東京五日遊行程',
-                text: '我的東京旅遊行程規劃，一起來看看吧！',
-                url: window.location.href
-            }).then(() => {
-                showAlert('分享成功', 'success');
-            }).catch((error) => {
-                console.log('分享失敗:', error);
+        // 渲染筆記列表
+        function renderNotes() {
+            const notesContainer = document.getElementById('notes-list');
+            
+            if (notesData.length === 0) {
+                notesContainer.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 20px;">尚無旅遊筆記，開始記錄你的東京之旅吧！</p>';
+                return;
+            }
+
+            let html = '';
+            notesData.forEach((note, index) => {
+                html += `
+                    <div class="note-item">
+                        <h4>${note.title}</h4>
+                        <div class="note-date">
+                            <i class="fas fa-calendar"></i> ${note.date}
+                        </div>
+                        <div class="note-content">${note.content.replace(/\n/g, '<br>')}</div>
+                        <div class="note-actions">
+                            <button class="delete-note-btn" onclick="deleteNote(${index})">
+                                <i class="fas fa-trash"></i> 刪除 </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            notesContainer.innerHTML = html;
+        }
+
+        // 儲存筆記
+        function saveNote() {
+            const titleInput = document.getElementById('note-title');
+            const contentInput = document.getElementById('note-content');
+            
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!title || !content) {
+                showAlert('請輸入筆記標題和內容', 'error');
+                return;
+            }
+
+            const newNote = {
+                title: title,
+                content: content,
+                date: new Date().toLocaleString('zh-TW'),
+                id: Date.now()
+            };
+
+            notesData.unshift(newNote); // 新筆記放在最前面
+
+            // 儲存到 localStorage
+            localStorage.setItem('tokyo-notes', JSON.stringify(notesData));
+
+            // 清空輸入框
+            titleInput.value = '';
+            contentInput.value = '';
+
+            // 重新渲染筆記列表
+            renderNotes();
+
+            showAlert('筆記已儲存', 'success');
+        }
+
+        // 刪除筆記
+        function deleteNote(index) {
+            if (confirm('確定要刪除這則筆記嗎？')) {
+                notesData.splice(index, 1);
+                
+                // 儲存到 localStorage
+                localStorage.setItem('tokyo-notes', JSON.stringify(notesData));
+
+                // 重新渲染筆記列表
+                renderNotes();
+                
+                showAlert('筆記已刪除', 'success');
+            }
+        }
+
+        // 分享行程功能
+        function shareItinerary() {
+            if (navigator.share) {
+                // 使用原生分享 API
+                navigator.share({
+                    title: '東京五日遊行程',
+                    text: '我的東京旅遊行程規劃，一起來看看吧！',
+                    url: window.location.href
+                }).then(() => {
+                    showAlert('分享成功', 'success');
+                }).catch((error) => {
+                    console.log('分享失敗:', error);
+                    fallbackShare();
+                });
+            } else {
+                // 備用分享方式
                 fallbackShare();
-            });
-        } else {
-            fallbackShare();
+            }
         }
-    }
 
-    // 備用分享方式
-    function fallbackShare() {
-        const url = window.location.href;
-        const text = `東京五日遊行程 - ${url}`;
-        
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(text).then(() => {
+        // 備用分享方式
+        function fallbackShare() {
+            const url = window.location.href;
+            const text = `東京五日遊行程 - ${url}`;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showAlert('連結已複製到剪貼簿', 'success');
+                });
+            } else {
+                // 創建臨時文字區域
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
                 showAlert('連結已複製到剪貼簿', 'success');
-            });
-        } else {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            showAlert('連結已複製到剪貼簿', 'success');
+            }
         }
-    }
 
-    // 離線下載功能
-    function downloadOffline() {
-        showLoading(true);
+        // 離線下載功能
+        function downloadOffline() {
+            showLoading(true);
 
-        const offlineData = {
-            itinerary: ITINERARY_DATA,
-            checklist: checklistData,
-            notes: notesData,
-            exportDate: new Date().toLocaleString('zh-TW')
-        };
+            // 準備離線資料
+            const offlineData = {
+                itinerary: ITINERARY_DATA,
+                checklist: checklistData,
+                notes: notesData,
+                exportDate: new Date().toLocaleString('zh-TW')
+            };
 
-        const dataStr = JSON.stringify(offlineData, null, 2);
-        const dataBlob = new Blob([dataStr], {type: 'application/json'});
-        
-        const downloadLink = document.createElement('a');
-        downloadLink.href = URL.createObjectURL(dataBlob);
-        downloadLink.download = `東京旅遊行程_${new Date().toISOString().split('T')[0]}.json`;
-        
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        
-        setTimeout(() => {
+            // 創建 JSON 檔案
+            const dataStr = JSON.stringify(offlineData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            // 創建下載連結
+            const downloadLink = document.createElement('a');
+            downloadLink.href = URL.createObjectURL(dataBlob);
+            downloadLink.download = `東京旅遊行程_${new Date().toISOString().split('T')[0]}.json`;
+            
+            // 觸發下載
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            
+            setTimeout(() => {
+                showLoading(false);
+                showAlert('行程資料已下載', 'success');
+            }, 1000);
+        }
+
+        // 顯示載入動畫
+        function showLoading(show) {
+            const loadingDiv = document.getElementById('loading');
+            if (show) {
+                loadingDiv.classList.remove('hidden');
+            } else {
+                loadingDiv.classList.add('hidden');
+            }
+        }
+
+        // 顯示提示訊息
+        function showAlert(message, type = 'success') {
+            // 移除現有的提示訊息
+            const existingAlert = document.querySelector('.alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+
+            // 創建新的提示訊息
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                ${message}
+            `;
+
+            // 插入到主要內容區域的頂部
+            const mainContent = document.querySelector('.main-content');
+            mainContent.insertBefore(alertDiv, mainContent.firstChild);
+
+            // 3秒後自動移除
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 3000);
+        }
+
+        // Google Apps Script API 呼叫函數
+        async function callGASAPI(action, data = {}) {
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: action,
+                        data: data
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('API 呼叫失敗:', error);
+                showAlert('網路連線失敗，使用離線模式', 'error');
+                return null;
+            }
+        }
+
+        // 儲存資料到 Google Sheets (可選功能)
+        async function saveToCloud() {
+            const cloudData = {
+                checklist: checklistData,
+                notes: notesData,
+                lastUpdate: new Date().toISOString()
+            };
+
+            const result = await callGASAPI('saveData', cloudData);
+            
+            if (result && result.success) {
+                showAlert('資料已同步到雲端', 'success');
+            } else {
+                showAlert('雲端同步失敗，資料已儲存在本機', 'error');
+            }
+        }
+
+        // 從雲端載入資料 (可選功能)
+        async function loadFromCloud() {
+            showLoading(true);
+            
+            const result = await callGASAPI('loadData');
+            
+            if (result && result.success && result.data) {
+                checklistData = result.data.checklist || checklistData;
+                notesData = result.data.notes || notesData;
+                
+                // 更新 localStorage
+                localStorage.setItem('tokyo-checklist', JSON.stringify(checklistData));
+                localStorage.setItem('tokyo-notes', JSON.stringify(notesData));
+                
+                // 重新渲染
+                loadChecklist();
+                renderNotes();
+                
+                showAlert('雲端資料載入成功', 'success');
+            }
+            
             showLoading(false);
-            showAlert('行程資料已下載', 'success');
-        }, 1000);
-    }
-
-    // 顯示載入動畫
-    function showLoading(show) {
-        const loadingDiv = document.getElementById('loading');
-        if (show) {
-            loadingDiv.classList.remove('hidden');
-        } else {
-            loadingDiv.classList.add('hidden');
-        }
-    }
-
-    // 顯示提示訊息
-    function showAlert(message, type = 'success') {
-        const existingAlert = document.querySelector('.alert');
-        if (existingAlert) {
-            existingAlert.remove();
         }
 
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type}`;
-        alertDiv.innerHTML = `
-            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
-            ${message}
-        `;
-
-        const mainContent = document.querySelector('.main-content');
-        mainContent.insertBefore(alertDiv, mainContent.firstChild);
-
-        setTimeout(() => {
-            if (alertDiv.parentNode) {
-                alertDiv.remove();
-            }
-        }, 3000);
-    }
-
-    // 鍵盤快捷鍵
-    document.addEventListener('keydown', function(e) {
-        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-            e.preventDefault();
-            const activeTab = document.querySelector('.tab-content.active');
-            if (activeTab && activeTab.id === 'notes') {
-                saveNote();
-            }
-        }
-        
-        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-            const activeTab = document.querySelector('.tab-content.active');
-            if (activeTab && activeTab.id === 'checklist') {
-                addChecklistItem();
-            }
-        }
-        
-        if (e.key >= '1' && e.key <= '5') {
-            const activeTab = document.querySelector('.tab-content.active');
-            if (activeTab && activeTab.id === 'itinerary') {
-                const day = parseInt(e.key);
-                loadItinerary(day);
-            }
-        }
-    });
-
-    // 觸控手勢支援
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    document.addEventListener('touchstart', function(e) {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-    });
-
-    document.addEventListener('touchend', function(e) {
-        if (!touchStartX || !touchStartY) return;
-
-        const touchEndX = e.changedTouches[0].clientX;
-        const touchEndY = e.changedTouches[0].clientY;
-
-        const diffX = touchStartX - touchEndX;
-        const diffY = touchStartY - touchEndY;
-
-        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-            const activeTab = document.querySelector('.tab-content.active');
-            if (activeTab && activeTab.id === 'itinerary') {
-                if (diffX > 0 && currentDay < 5) {
-                    loadItinerary(currentDay + 1);
-                } else if (diffX < 0 && currentDay > 1) {
-                    loadItinerary(currentDay - 1);
+        // 鍵盤快捷鍵
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + S 儲存筆記
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab && activeTab.id === 'notes') {
+                    saveNote();
                 }
             }
+            
+            // Ctrl/Cmd + Enter 新增待辦事項
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab && activeTab.id === 'checklist') {
+                    addChecklistItem();
+                }
+            }
+            
+            // 數字鍵 1-5 切換行程日期
+            if (e.key >= '1' && e.key <= '5') {
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab && activeTab.id === 'itinerary') {
+                    const day = parseInt(e.key);
+                    loadItinerary(day);
+                }
+            }
+        });
+
+        // PWA 支援 (Service Worker)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(function(registrationError) {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
         }
 
-        touchStartX = 0;
-        touchStartY = 0;
-    });
-
-    // 匯率轉換功能
-    function convertCurrency(amount, fromCurrency = 'JPY', toCurrency = 'TWD') {
-        const exchangeRates = {
-            'JPY_TWD': 0.21,
-            'TWD_JPY': 4.76
-        };
-
-        const rate = exchangeRates[`${fromCurrency}_${toCurrency}`];
-        return rate ? (amount * rate).toFixed(0) : amount;
-    }
-
-    // 更新預算顯示台幣
-    function updateBudgetWithExchangeRate() {
-        const totalJPY = parseInt(document.getElementById('total-amount').textContent.replace(/[¥,]/g, ''));
-        const totalTWD = convertCurrency(totalJPY, 'JPY', 'TWD');
-        
-        const summaryDiv = document.querySelector('.budget-summary');
-        let twdDisplay = summaryDiv.querySelector('.twd-amount');
-        
-        if (!twdDisplay) {
-            twdDisplay = document.createElement('p');
-            twdDisplay.className = 'twd-amount';
-            summaryDiv.appendChild(twdDisplay);
-        }
-        
-        twdDisplay.innerHTML = `約 NT$${parseInt(totalTWD).toLocaleString()}`;
-    }
-
-    // 修改預算計算函數
-    const originalCalculateBudget = calculateBudget;
-    calculateBudget = function() {
-        originalCalculateBudget();
-        updateBudgetWithExchangeRate();
-    };
-
-    // 自動儲存功能
-    setInterval(function() {
-        localStorage.setItem('tokyo-checklist', JSON.stringify(checklistData));
-        localStorage.setItem('tokyo-notes', JSON.stringify(notesData));
-    }, 30000);
-
-    // 頁面可見性變化時儲存資料
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
+        // 自動儲存功能
+        setInterval(function() {
+            // 每30秒自動儲存到 localStorage
             localStorage.setItem('tokyo-checklist', JSON.stringify(checklistData));
             localStorage.setItem('tokyo-notes', JSON.stringify(notesData));
+        }, 30000);
+
+        // 頁面可見性變化時儲存資料
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                localStorage.setItem('tokyo-checklist', JSON.stringify(checklistData));
+                localStorage.setItem('tokyo-notes', JSON.stringify(notesData));
+            }
+        });
+
+        // 觸控手勢支援 (行動裝置)
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            if (!touchStartX || !touchStartY) return;
+
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
+
+            // 判斷是否為水平滑動
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab && activeTab.id === 'itinerary') {
+                    if (diffX > 0 && currentDay < 5) {
+                        // 向左滑動，下一天
+                        loadItinerary(currentDay + 1);
+                    } else if (diffX < 0 && currentDay > 1) {
+                        // 向右滑動，上一天
+                        loadItinerary(currentDay - 1);
+                    }
+                }
+            }
+
+            touchStartX = 0;
+            touchStartY = 0;
+        });
+
+        // 深色模式切換
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('dark-mode', document.body.classList.contains('dark-mode'));
         }
-    });
 
-    // 初始化完成提示
-    console.log('🗾 東京旅遊行程 App 已載入完成！');
-    console.log('💡 小提示：');
-    console.log('   - 使用數字鍵 1-5 快速切換行程日期');
-    console.log('   - Ctrl+S 快速儲存筆記');
-    console.log('   - Ctrl+Enter 快速新增待辦事項');
-    console.log('   - 在行程頁面左右滑動可切換日期 (行動裝置)');
-    console.log('   - 點擊地圖連結可在Google地圖中查看詳細位置');
-    console.log('   - ⭐ Day 3 已調整 Shibuya Sky 時間至 13:40-14:40');
-</script>
-</body> </html>
+        // 載入深色模式設定
+        if (localStorage.getItem('dark-mode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
 
+        // 匯出功能增強
+        function exportToPDF() {
+            showAlert('PDF 匯出功能開發中...', 'error');
+            // 這裡可以整合 jsPDF 或其他 PDF 生成庫
+        }
 
+        // 語音備忘錄功能 (實驗性)
+        function startVoiceMemo() {
+            if ('webkitSpeechRecognition' in window) {
+                const recognition = new webkitSpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'zh-TW';
+
+                recognition.start();
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('note-content').value += transcript;
+                    showAlert('語音識別完成', 'success');
+                };
+
+                recognition.onerror = function(event) {
+                    showAlert('語音識別失敗', 'error');
+                };
+            } else {
+                showAlert('瀏覽器不支援語音識別', 'error');
+            }
+        }
+
+        // 天氣資訊 (可選功能)
+        async function getWeatherInfo() {
+            // 這裡可以整合天氣 API
+            showAlert('天氣資訊功能開發中...', 'error');
+        }
+
+        // 匯率轉換功能
+        function convertCurrency(amount, fromCurrency = 'JPY', toCurrency = 'TWD') {
+            // 模擬匯率 (實際應該呼叫匯率 API)
+            const exchangeRates = {
+                'JPY_TWD': 0.21,
+                'TWD_JPY': 4.76
+            };
+
+            const rate = exchangeRates[`${fromCurrency}_${toCurrency}`];
+            return rate ? (amount * rate).toFixed(0) : amount;
+        }
+
+        // 新增匯率顯示到預算計算器
+        function updateBudgetWithExchangeRate() {
+            const totalJPY = parseInt(document.getElementById('total-amount').textContent.replace(/[¥,]/g, ''));
+            const totalTWD = convertCurrency(totalJPY, 'JPY', 'TWD');
+            
+            // 在預算摘要中顯示台幣金額
+            const summaryDiv = document.querySelector('.budget-summary');
+            let twdDisplay = summaryDiv.querySelector('.twd-amount');
+            
+            if (!twdDisplay) {
+                twdDisplay = document.createElement('p');
+                twdDisplay.className = 'twd-amount';
+                summaryDiv.appendChild(twdDisplay);
+            }
+            
+            twdDisplay.innerHTML = `約 NT$${parseInt(totalTWD).toLocaleString()}`;
+        }
+
+        // 修改預算計算函數以包含匯率
+        const originalCalculateBudget = calculateBudget;
+        calculateBudget = function() {
+            originalCalculateBudget();
+            updateBudgetWithExchangeRate();
+        };
+
+        // 初始化完成提示
+        console.log('🗾 東京旅遊行程 App 已載入完成！');
+        console.log('💡 小提示：');
+        console.log('   - 使用數字鍵 1-5 快速切換行程日期');
+        console.log('   - Ctrl+S 快速儲存筆記');
+        console.log('   - Ctrl+Enter 快速新增待辦事項');
+        console.log('   - 在行程頁面左右滑動可切換日期 (行動裝置)');
+        console.log('   - 點擊地圖連結可在Google地圖中查看詳細位置');
+    </script>
+</body>
+</html>
+
+                            
